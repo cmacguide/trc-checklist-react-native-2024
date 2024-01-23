@@ -11,7 +11,13 @@ import { useIsFocused } from "@react-navigation/native";
 //import { data } from "../assets/data.json"
 
 export default function LoginScreen({ navigation }) {
-  const jsonFieldsChecklist = require('../assets/jsonFieldsChecklist.json');
+  const jsonFieldsChecklist = require("../assets/jsonFieldsChecklist.json");
+  console.log(
+    "jsonFieldsChecklist",
+    jsonFieldsChecklist.CAMPOS.map((item, index) => {
+      return item.IDGRUPO29238.data;
+    })
+  );
   //const data = require('../assets/data.json');
   // keep back arrow from showing
   React.useLayoutEffect(() => {
@@ -32,7 +38,6 @@ export default function LoginScreen({ navigation }) {
       WizardStore.update((s) => {
         s.progress = 0;
       });
-
   }, [isFocused]);
 
   const onSubmit = (data) => {
@@ -45,11 +50,11 @@ export default function LoginScreen({ navigation }) {
   };
 
   const renderField = (json) => {
-    console.log("renderField", json.DESCRICAO )
-    return <Text>{json.DESCRICAO}</Text>
-  }
+    console.log("renderField", json.DESCRICAO);
+    return <Text>{json.DESCRICAO}</Text>;
+  };
 
-  console.log("json0 ", jsonFieldsChecklist)
+  console.log("json0 ", jsonFieldsChecklist);
   //console.log("data", data)
 
   return (
@@ -62,15 +67,16 @@ export default function LoginScreen({ navigation }) {
       <View style={{ paddingHorizontal: 16 }}>
         <View>
           {jsonFieldsChecklist.CAMPOS.map((item, index) => {
-            console.log("item", item)
+            console.log("item", item);
             return (
               <Text key={index}>item</Text>
               //console.log("item", item.CAMPO)
             );
           })}
           <Text> Json: </Text>
-          { jsonFieldsChecklist.CAMPOS.map( (item, index) => {
+          {jsonFieldsChecklist.CAMPOS.map((item, index) => {
             return true;
+            
             //return renderJson(item)
             //Object.keys(item).map( (i2) => {
             //  console.log("i2", i2)
@@ -79,25 +85,25 @@ export default function LoginScreen({ navigation }) {
             //return (<Text key={index}>ASDASD</Text>)
 
             let output = "";
-            Object.values(item).forEach( (a2, i) => {
+            Object.values(item).forEach((a2, i) => {
               //Object.value(a2).map( (r3) => {
               //  console.log("r3", r3)
               //})
               //console.log("a2 0 i", Object.values(a2[0])[0][0].DESCRICAO, i)
-              console.log("a2", a2.CAMPO)
+              console.log("a2", a2.CAMPO);
               //return a2.CAMPO.DESCRICAO
               //renderField(a2.CAMPO)
-              output += "<Text>a2.CAMPO.DESCRICAO</Text>"
+              output += "<Text>a2.CAMPO.DESCRICAO</Text>";
               //return (<Text>lllllll</Text>)
-            })
+            });
             //return (<Text>a2.CAMPO.DESCRICAO</Text>)
-            
+
             console.log("output", output);
             //return (<Text html={output}</Text>)
-            console.log("item", item)
-            console.log("index", index)
-            return (<Text></Text>)
-          }) }
+            console.log("item", item);
+            console.log("index", index);
+            return <Text></Text>;
+          })}
         </View>
         <View style={styles.formEntry}>
           <Controller
