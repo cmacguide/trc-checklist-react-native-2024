@@ -11,6 +11,7 @@ import { ProgressBar,MD3Colors, Provider as PaperProvider } from 'react-native-p
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
+import LoginScreen from "./screens/LoginScreen";
 import Step1Screen from "./screens/Step1Screen";
 import Step2Screen from "./screens/Step2Screen";
 import Step3Screen from "./screens/Step3Screen";
@@ -23,7 +24,8 @@ export default function App() {
     <PaperProvider>
       
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Step1">
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Step1" component={Step1Screen} />
           <Stack.Screen name="Step2" component={Step2Screen} />
           <Stack.Screen name="Step3" component={Step3Screen} />

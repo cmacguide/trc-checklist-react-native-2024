@@ -1,0 +1,37 @@
+{
+	"CHECKLIST": "ALOJAMENTO",
+	"OBRA": 234,
+	"EXAMINADOR": "Usuário logado",
+	"ID": 1212, //se estiver vazio é novo cadastro, se tiver ID é editando
+	"CAMPOS": [{
+		"IDGRUPO09123" : {
+			"CAMPO": {
+				"DESCRICAO": "Foto da fachada",
+				"CRITICIDADE": "C",
+				"CONFORMIDADE": "",
+				"COMENTARIO": "",
+				"FOTO": "NAO AGORA",
+			},
+			"CAMPO": {
+				"DESCRICAO": "Gas no fogao",
+				"CRITICIDADE": "B",
+				"CONFORMIDADE": "",
+				"COMENTARIO": ""
+			}
+		},
+		"IDGRUPO29238" : {
+			"CAMPO": {
+				"DESCRICAO": "Manchas na parede",
+				"CRITICIDADE": "A",
+				"CONFORMIDADE": "",
+				"COMENTARIO": ""
+			},
+			"CAMPO": {
+				"DESCRICAO": "Toalha na mesa",
+				"CRITICIDADE": "B",
+				"CONFORMIDADE": "",
+				"COMENTARIO": ""
+			}
+		}
+	}]
+}
