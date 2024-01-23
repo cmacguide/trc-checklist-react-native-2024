@@ -2,7 +2,12 @@ import React, { useEffect } from "react";
 import { Text, View, StyleSheet, Alert } from "react-native";
 import Constants from "expo-constants";
 
-import { SubmitHandler, useForm, Controller } from "react-hook-form";
+import {
+  SubmitHandler,
+  useForm,
+  Controller,
+  useFieldArray,
+} from "react-hook-form";
 import { WizardStore } from "../store";
 import { Button, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
 import { useIsFocused } from "@react-navigation/native";
@@ -11,13 +16,7 @@ import { useIsFocused } from "@react-navigation/native";
 //import { data } from "../assets/data.json"
 
 export default function LoginScreen({ navigation }) {
-  const jsonFieldsChecklist = require("../assets/jsonFieldsChecklist.json");
-  console.log(
-    "jsonFieldsChecklist",
-    jsonFieldsChecklist.CAMPOS.map((item, index) => {
-      return item.IDGRUPO29238.data;
-    })
-  );
+  const mock = require("../assets/mock.json");
   //const data = require('../assets/data.json');
   // keep back arrow from showing
   React.useLayoutEffect(() => {
@@ -27,10 +26,32 @@ export default function LoginScreen({ navigation }) {
   }, [navigation]);
 
   const {
-    handleSubmit,
+    register,
     control,
+    handleSubmit,
+    reset,
+    watch,
     formState: { errors },
-  } = useForm({ defaultValues: WizardStore.useState((s) => s) });
+  } = useForm({
+    defaultValues: {
+      test: [{ firstName: "Bill", lastName: "Luo" }],
+    },
+    mode: "onChange",
+  });
+  const { fields, append, prepend, remove, swap, move, insert, replace } =
+    useFieldArray({
+      control,
+      name: "test",
+      rules: {
+        minLength: 4,
+      },
+    });
+
+  let renderCount = 0;
+
+  console.log("errors", errors);
+
+  const onSubmit = (data) => console.log("data", data);
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -40,130 +61,147 @@ export default function LoginScreen({ navigation }) {
       });
   }, [isFocused]);
 
-  const onSubmit = (data) => {
-    WizardStore.update((s) => {
-      s.progress = 10;
-      s.username = data.username;
-      s.password = data.password;
-    });
-    navigation.navigate("Step1");
-  };
-
-  const renderField = (json) => {
-    console.log("renderField", json.DESCRICAO);
-    return <Text>{json.DESCRICAO}</Text>;
-  };
-
-  console.log("json0 ", jsonFieldsChecklist);
-  //console.log("data", data)
-
+  console.log("fields", fields);
   return (
-    <View style={styles.container}>
+    <View onSubmit={handleSubmit(onSubmit)} style={styles.container}>
       <ProgressBar
         style={styles.progressBar}
         progress={WizardStore.getRawState().progress}
         color={MD3Colors.primary60}
       />
       <View style={{ paddingHorizontal: 16 }}>
-        <View>
-          {jsonFieldsChecklist.CAMPOS.map((item, index) => {
-            console.log("item", item);
-            return (
-              <Text key={index}>item</Text>
-              //console.log("item", item.CAMPO)
-            );
-          })}
-          <Text> Json: </Text>
-          {jsonFieldsChecklist.CAMPOS.map((item, index) => {
-            return true;
-            
-            //return renderJson(item)
-            //Object.keys(item).map( (i2) => {
-            //  console.log("i2", i2)
-            //})
-            //<Text>{item}</Text>
-            //return (<Text key={index}>ASDASD</Text>)
-
-            let output = "";
-            Object.values(item).forEach((a2, i) => {
-              //Object.value(a2).map( (r3) => {
-              //  console.log("r3", r3)
-              //})
-              //console.log("a2 0 i", Object.values(a2[0])[0][0].DESCRICAO, i)
-              console.log("a2", a2.CAMPO);
-              //return a2.CAMPO.DESCRICAO
-              //renderField(a2.CAMPO)
-              output += "<Text>a2.CAMPO.DESCRICAO</Text>";
-              //return (<Text>lllllll</Text>)
-            });
-            //return (<Text>a2.CAMPO.DESCRICAO</Text>)
-
-            console.log("output", output);
-            //return (<Text html={output}</Text>)
-            console.log("item", item);
-            console.log("index", index);
-            return <Text></Text>;
-          })}
-        </View>
-        <View style={styles.formEntry}>
-          <Controller
-            control={control}
-            rules={{
-              required: true,
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                mode="outlined"
-                label="Username"
-                placeholder="Nome de usuário"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-            )}
-            name="username"
-          />
-          {errors.username && (
-            <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
-              Campo obrigatório.
-            </Text>
-          )}
-        </View>
-
-        <View style={[styles.formEntry]}>
-          <Controller
-            control={control}
-            rules={{
-              required: true,
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                mode="outlined"
-                label="Password"
-                placeholder="Senha"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                keyboardType="numeric"
-              />
-            )}
-            name="password"
-          />
-          {errors.password && (
-            <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
-              Campo obrigatório.
-            </Text>
-          )}
-        </View>
-
-        <Button
-          onPress={handleSubmit(onSubmit)}
-          mode="outlined"
-          style={styles.button}
-        >
-          ENTRAR
-        </Button>
+        <Text>Field Array</Text>
+        <Text>
+          The following demo allow you to delete, append, prepend items
+        </Text>
+        <Text>Render Count: {renderCount}</Text>
       </View>
+      <View style={{ paddingHorizontal: 16 }}></View>
+
+      {fields.map((item, index) => {
+        return (
+          <View key={item.id} style={{ paddingHorizontal: 16 }}>
+            <TextInput
+              {...register(`test.${index}.firstName`, { required: true })}
+            />
+
+            <Controller
+              render={({ field }) => <TextInput {...field} />}
+              name={`test.${index}.lastName`}
+              control={control}
+            />
+            <Button title="Delete" onPress={() => remove(index)} />
+          </View>
+        );
+      })}
+
+      <Button
+        title="append"
+        mode="outlined"
+        style={styles.button}
+        onPress={() => {
+          append({ firstName: "appendBill", lastName: "appendLuo" });
+        }}
+      >
+        append
+      </Button>
+
+      <Button
+        title="prepend"
+        mode="outlined"
+        style={styles.button}
+        onPress={() =>
+          prepend({
+            firstName: "prependFirstName",
+            lastName: "prependLastName",
+          })
+        }
+      >
+        prepend
+      </Button>
+
+      {/* <Button
+        title="insert at"
+        mode="outlined"
+        style={styles.button}
+        onPress={() =>
+          insert(parseInt(2, 10), {
+            firstName: "insertFirstName",
+            lastName: "insertLastName",
+          })
+        }
+      >
+        insert at
+      </Button> */}
+
+      {/* <Button
+        title="swap"
+        mode="outlined"
+        style={styles.button}
+        onPress={() => swap(1, 2)}
+      >
+        swap
+      </Button>
+
+      <Button
+        title="move"
+        mode="outlined"
+        style={styles.button}
+        onPress={() => move(1, 2)}
+      >
+        move
+      </Button> */}
+
+      <Button
+        title="replace"
+        mode="outlined"
+        style={styles.button}
+        onPress={() =>
+          replace([
+            {
+              firstName: "test1",
+              lastName: "test1",
+            },
+            {
+              firstName: "test2",
+              lastName: "test2",
+            },
+          ])
+        }
+      >
+        replace
+      </Button>
+
+      <Button
+        title="remove at"
+        mode="outlined"
+        style={styles.button}
+        onPress={() => remove(1)}
+      >
+        remove at
+      </Button>
+
+      <Button
+        title="reset"
+        mode="outlined"
+        style={styles.button}
+        onPress={() =>
+          reset({
+            test: [{ firstName: "Bill", lastName: "Luo" }],
+          })
+        }
+      >
+        reset
+      </Button>
+
+      <Button
+        title="Submit"
+        mode="outlined"
+        style={styles.button}
+        onPress={handleSubmit(onSubmit)}
+      >
+        Submit
+      </Button>
     </View>
   );
 }

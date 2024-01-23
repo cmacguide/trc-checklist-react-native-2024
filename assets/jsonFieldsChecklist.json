@@ -1,9 +1,8 @@
-
 {
   "CHECKLIST": "ALOJAMENTO",
   "OBRA": 234,
   "EXAMINADOR": "Usuário logado",
-  "ID": 1212, 
+  "ID": 1212,
   "CAMPOS": [
     {
       "IDGRUPO09123": {
@@ -26,7 +25,9 @@
             }
           }
         ]
-      },
+      }
+    },
+    {
       "IDGRUPO29238": {
         "data": [
           {
