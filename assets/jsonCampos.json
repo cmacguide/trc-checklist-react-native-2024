@@ -1,0 +1,19 @@
+{
+    "campos": [
+      {
+        "descricao": "Campo de texto 1",
+        "criticidadeMinima": "A",
+        "criticidadeAuferida": ""
+      },
+      {
+        "descricao": "Campo de texto 2",
+        "criticidadeMinima": "B",
+        "criticidadeAuferida": ""
+      },
+      {
+        "descricao": "Campo de texto 3",
+        "criticidadeMinima": "C",
+        "criticidadeAuferida": ""
+      }
+    ]
+  }

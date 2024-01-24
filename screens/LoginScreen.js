@@ -1,6 +1,8 @@
-import React, { useEffect } from "react";
-import { Text, View, StyleSheet, Alert } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Text, View, StyleSheet, Alert, Select } from "react-native";
 import Constants from "expo-constants";
+import SelectBox from 'react-native-multi-selectbox'
+import { xorBy } from 'lodash'
 
 import {
   SubmitHandler,
@@ -14,9 +16,32 @@ import { useIsFocused } from "@react-navigation/native";
 
 //import { jsonFieldsChecklist } from "../assets/jsonFieldsChecklist.json"
 //import { data } from "../assets/data.json"
+const K_OPTIONS = [
+  {
+    item: 'A',
+    id: 'A',
+  },
+  {
+    item: 'B',
+    id: 'B',
+  },
+  {
+    item: 'C',
+    id: 'C',
+  },
+  {
+    item: 'D',
+    id: 'D',
+  },
+  {
+    item: 'E',
+    id: 'E',
+  }
+]
 
 export default function LoginScreen({ navigation }) {
-  const mock = require("../assets/mock.json");
+  const jsonCampos = require("../assets/jsonCampos.json");
+  const [selectedTeam, setSelectedTeam] = useState({})
   //const data = require('../assets/data.json');
   // keep back arrow from showing
   React.useLayoutEffect(() => {
@@ -24,7 +49,8 @@ export default function LoginScreen({ navigation }) {
       headerLeft: () => null,
     });
   }, [navigation]);
-
+  console.log("jsonCampos", jsonCampos.campos)
+  const values = jsonCampos.campos
   const {
     register,
     control,
@@ -34,10 +60,23 @@ export default function LoginScreen({ navigation }) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      test: [{ firstName: "Bill", lastName: "Luo" }],
+      test: [{ descricao: "Bill", criticidadeMinima: "Luo" }],
     },
     mode: "onChange",
   });
+  //console.log("app....")
+  //append({ descricao: "appendBill", criticidadeMinima: "appendLuo" })
+  
+//   useEffect(() => {
+//     if (values) {
+//         setValue([
+//             { name: values.text }, 
+//             { phone: values.text }
+//         ]);
+//     }
+// }, [values]);
+  //useForm({ defaultValues: async () => await fetch(jsonCampos.myFieldName) })
+
   const { fields, append, prepend, remove, swap, move, insert, replace } =
     useFieldArray({
       control,
@@ -54,14 +93,18 @@ export default function LoginScreen({ navigation }) {
   const onSubmit = (data) => console.log("data", data);
   const isFocused = useIsFocused();
 
-  useEffect(() => {
-    isFocused &&
-      WizardStore.update((s) => {
-        s.progress = 0;
-      });
-  }, [isFocused]);
-
-  console.log("fields", fields);
+  //append({ descricao: "appendBill", criticidadeMinima: "appendLuo" });
+  // useEffect(() => {
+  //   isFocused &&
+  //     WizardStore.update((s) => {
+  //       s.progress = 0;
+  //     });
+  // }, [isFocused]);
+  
+  // console.log("fields", fields);
+  function onChange() {
+    return (val) => setSelectedTeam(val)
+  }
   return (
     <View onSubmit={handleSubmit(onSubmit)} style={styles.container}>
       <ProgressBar
@@ -81,15 +124,23 @@ export default function LoginScreen({ navigation }) {
       {fields.map((item, index) => {
         return (
           <View key={item.id} style={{ paddingHorizontal: 16 }}>
-            <TextInput
-              {...register(`test.${index}.firstName`, { required: true })}
+            <Text>{item.descricao}</Text>
+            {/* <TextInput
+              {...register(`test.${index}.descricao`, { required: true })}
+            /> */}
+            <SelectBox
+              label="Nota"
+              options={K_OPTIONS}
+              width="10%"
+              value={selectedTeam}
+              onChange={onChange()}
+              hideInputFilter={true}
             />
-
-            <Controller
+            {/* <Controller
               render={({ field }) => <TextInput {...field} />}
-              name={`test.${index}.lastName`}
+              name={`test.${index}.criticidadeMinima`}
               control={control}
-            />
+            /> */}
             <Button title="Delete" onPress={() => remove(index)} />
           </View>
         );
@@ -100,7 +151,7 @@ export default function LoginScreen({ navigation }) {
         mode="outlined"
         style={styles.button}
         onPress={() => {
-          append({ firstName: "appendBill", lastName: "appendLuo" });
+          append({ descricao: "appendBill", criticidadeMinima: "appendLuo" });
         }}
       >
         append
@@ -112,8 +163,8 @@ export default function LoginScreen({ navigation }) {
         style={styles.button}
         onPress={() =>
           prepend({
-            firstName: "prependFirstName",
-            lastName: "prependLastName",
+            descricao: "prependdescricao",
+            criticidadeMinima: "prependcriticidadeMinima",
           })
         }
       >
@@ -126,8 +177,8 @@ export default function LoginScreen({ navigation }) {
         style={styles.button}
         onPress={() =>
           insert(parseInt(2, 10), {
-            firstName: "insertFirstName",
-            lastName: "insertLastName",
+            descricao: "insertdescricao",
+            criticidadeMinima: "insertcriticidadeMinima",
           })
         }
       >
@@ -157,16 +208,17 @@ export default function LoginScreen({ navigation }) {
         mode="outlined"
         style={styles.button}
         onPress={() =>
-          replace([
-            {
-              firstName: "test1",
-              lastName: "test1",
-            },
-            {
-              firstName: "test2",
-              lastName: "test2",
-            },
-          ])
+          replace(jsonCampos.campos)
+          // replace([
+          //   {
+          //     descricao: "test1",
+          //     criticidadeMinima: "test1",
+          //   },
+          //   {
+          //     descricao: "test2",
+          //     criticidadeMinima: "test2",
+          //   },
+          // ])
         }
       >
         replace
@@ -187,7 +239,7 @@ export default function LoginScreen({ navigation }) {
         style={styles.button}
         onPress={() =>
           reset({
-            test: [{ firstName: "Bill", lastName: "Luo" }],
+            test: [{ descricao: "Bill", criticidadeMinima: "Luo", criticidadeAuferida: "" }],
           })
         }
       >
