@@ -40,6 +40,8 @@ export default function ConfirmationScreen({ navigation }) {
     navigation.replace("Step1");
   };
 
+  const jsonCampos = require("../assets/jsonCampos.json");
+
   console.log("information", information)
   
   return (
@@ -66,11 +68,34 @@ export default function ConfirmationScreen({ navigation }) {
         <View>
             { information.age }
         </View>
-        <SummaryEntry name={information.fullName} label={"Full Name"} />
+        
+        {
+          information.step1.map((item, index) => {
+            return  <SummaryEntry 
+                      name={information.step1[index] + " / " + jsonCampos.campos[index].criticidadeMinima}  
+                      label={jsonCampos.campos[index].descricao} 
+                    />
+                  // <View>
+                  //   <Text>{jsonCampos.campos[index].descricao}</Text>
+                  //   <Text>{information.step1[index]}</Text>
+                  //  </View>
+          })
+        }
 
-        <SummaryEntry name={information.age} label={"Age"} />
+        <SummaryEntry 
+          name={information.fullName} 
+          label={"Full Name"} 
+        />
 
-        <SummaryEntry name={information.birthPlace} label={"Birth Place"} />
+        <SummaryEntry 
+          name={information.age} 
+          label={"Age"} 
+        />
+
+        <SummaryEntry 
+          name={information.birthPlace} 
+          label={"Birth Place"} 
+        />
 
         <SummaryEntry
           name={information.maidenName}

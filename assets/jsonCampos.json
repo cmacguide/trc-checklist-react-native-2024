@@ -1,18 +1,23 @@
 {
     "campos": [
       {
-        "descricao": "Campo de texto 1",
-        "criticidadeMinima": "A",
-        "criticidadeAuferida": ""
-      },
-      {
-        "descricao": "Campo de texto 2",
+        "descricao": "Papel Higiênico",
         "criticidadeMinima": "B",
         "criticidadeAuferida": ""
       },
       {
-        "descricao": "Campo de texto 3",
-        "criticidadeMinima": "C",
+        "descricao": "Toalha de Mesa",
+        "criticidadeMinima": "B",
+        "criticidadeAuferida": ""
+      },
+      {
+        "descricao": "Gás",
+        "criticidadeMinima": "B",
+        "criticidadeAuferida": ""
+      },
+      {
+        "descricao": "Chuveiro",
+        "criticidadeMinima": "B",
         "criticidadeAuferida": ""
       }
     ]

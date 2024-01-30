@@ -152,20 +152,24 @@ export default function LoginScreen({ navigation }) {
         color={MD3Colors.primary60}
       />
       <View style={{ paddingHorizontal: 16 }}></View>
-      
+      <Text>{ WizardStore.getRawState().s }</Text>
       {fields.map((item, index) => {
         return (
           <View key={item.id} style={{ paddingHorizontal: 16 }}>
-            <Text>{item.descricao}, {item.id}</Text>
+            <Text>{item.descricao}</Text>
             <SelectDropdown
               name={item.id}
               data={countries}
-              //rowTextForSelection={item.id}
+              defaultButtonText="Responder"
               onSelect={(selectedItem, index) => {
                 console.log(selectedItem, index)
+                
                 WizardStore.update((s) => {
+                  s.step1 == undefined ? s.step1 = [] : "";
+                  console.log("index interno", index)
                   s.username = selectedItem;
                   s[item.id] = selectedItem;
+                  s.step1[index] = selectedItem; //não começa com 0
                 });
                 
               }}
