@@ -40,6 +40,8 @@ export default function ConfirmationScreen({ navigation }) {
     navigation.replace("Step1");
   };
 
+  console.log("information", information)
+  
   return (
     <View style={styles.container}>
       <ProgressBar
@@ -61,7 +63,9 @@ export default function ConfirmationScreen({ navigation }) {
             </Dialog.Actions>
           </Dialog>
         </Portal>
-
+        <View>
+            { information.age }
+        </View>
         <SummaryEntry name={information.fullName} label={"Full Name"} />
 
         <SummaryEntry name={information.age} label={"Age"} />

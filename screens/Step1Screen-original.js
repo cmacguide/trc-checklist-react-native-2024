@@ -7,12 +7,7 @@ import { WizardStore } from "../store";
 import { Button, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
 import { useIsFocused } from "@react-navigation/native";
 
-//import { jsonFieldsChecklist } from "../assets/jsonFieldsChecklist.json"
-//import { data } from "../assets/data.json"
-
-export default function LoginScreen({ navigation }) {
-  const jsonFieldsChecklist = require("../assets/jsonFieldsChecklist.json");
-    //const data = require('../assets/data.json');
+export default function Step1Screen({ navigation }) {
   // keep back arrow from showing
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -23,8 +18,6 @@ export default function LoginScreen({ navigation }) {
   const {
     handleSubmit,
     control,
-    register,
-
     formState: { errors },
   } = useForm({ defaultValues: WizardStore.useState((s) => s) });
   const isFocused = useIsFocused();
@@ -34,25 +27,17 @@ export default function LoginScreen({ navigation }) {
       WizardStore.update((s) => {
         s.progress = 0;
       });
+
   }, [isFocused]);
 
   const onSubmit = (data) => {
     WizardStore.update((s) => {
-      s.progress = 10;
-      s.username = data.username;
-      s.password = data.password;
+      s.progress = 33;
+      s.fullName = data.fullName;
+      s.age = data.age;
     });
-    navigation.navigate("Step1");
+    navigation.navigate("Step2");
   };
-
-  const renderField = (json) => {
-    console.log("renderField", json.DESCRICAO);
-    return <Text>{json.DESCRICAO}</Text>;
-  };
-
-  console.log("json0 ", jsonFieldsChecklist);
-  //console.log("data", data)
-
   return (
     <View style={styles.container}>
       <ProgressBar
@@ -61,7 +46,6 @@ export default function LoginScreen({ navigation }) {
         color={MD3Colors.primary60}
       />
       <View style={{ paddingHorizontal: 16 }}>
-        
         <View style={styles.formEntry}>
           <Controller
             control={control}
@@ -71,18 +55,18 @@ export default function LoginScreen({ navigation }) {
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 mode="outlined"
-                label="Usuário"
-                placeholder="Digite seu nome de usuário"
+                label="Full Name"
+                placeholder="Enter Full Name"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
               />
             )}
-            name="username"
+            name="fullName"
           />
-          {errors.username && (
+          {errors.fullName && (
             <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
-              Campo obrigatório.
+              This is a required field.
             </Text>
           )}
         </View>
@@ -96,19 +80,19 @@ export default function LoginScreen({ navigation }) {
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 mode="outlined"
-                label="Senha"
-                placeholder="Digite sua senha"
+                label="Age"
+                placeholder="Enter Age"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
                 keyboardType="numeric"
               />
             )}
-            name="password"
+            name="age"
           />
-          {errors.password && (
+          {errors.age && (
             <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
-              Campo obrigatório.
+              This is a required field.
             </Text>
           )}
         </View>
@@ -118,7 +102,7 @@ export default function LoginScreen({ navigation }) {
           mode="outlined"
           style={styles.button}
         >
-          ENTRAR
+          GOTO STEP TWO
         </Button>
       </View>
     </View>

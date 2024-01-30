@@ -1,43 +1,149 @@
-import React, { useEffect } from "react";
-import { Text, View, StyleSheet, Alert } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Text, View, StyleSheet, Alert, Select } from "react-native";
 import Constants from "expo-constants";
+import SelectBox from 'react-native-multi-selectbox'
+import SelectDropdown from 'react-native-select-dropdown'
+import { xorBy } from 'lodash'
 
-import { SubmitHandler, useForm, Controller } from "react-hook-form";
+import {
+  SubmitHandler,
+  useForm,
+  Controller,
+  useFieldArray,
+} from "react-hook-form";
 import { WizardStore } from "../store";
 import { Button, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
 import { useIsFocused } from "@react-navigation/native";
 
-export default function Step1Screen({ navigation }) {
+//import { jsonFieldsChecklist } from "../assets/jsonFieldsChecklist.json"
+//import { data } from "../assets/data.json"
+const K_OPTIONS = [
+  {
+    item: 'A',
+    id: 'A',
+  },
+  {
+    item: 'B',
+    id: 'B',
+  },
+  {
+    item: 'C',
+    id: 'C',
+  },
+  {
+    item: 'D',
+    id: 'D',
+  },
+  {
+    item: 'E',
+    id: 'E',
+  }
+]
+const countries = ["A", "B", "C", "D", "E"]
+
+export default function LoginScreen({ navigation }) {
+  const jsonCampos = require("../assets/jsonCampos.json");
+  const [selectedTeam, setSelectedTeam] = useState([])
+  //const data = require('../assets/data.json');
   // keep back arrow from showing
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => null,
     });
   }, [navigation]);
-
+  
+  //console.log("jsonCampos", jsonCampos.campos)
+  
+  const values = jsonCampos.campos
   const {
-    handleSubmit,
+    register,
     control,
+    handleSubmit,
+    reset,
+    watch,
     formState: { errors },
   } = useForm({ defaultValues: WizardStore.useState((s) => s) });
-  const isFocused = useIsFocused();
+
+  //console.log("app....")
+  //append({ descricao: "appendBill", criticidadeMinima: "appendLuo" })
+  
+//   useEffect(() => {
+//     if (values) {
+//         setValue([
+//             { name: values.text }, 
+//             { phone: values.text }
+//         ]);
+//     }
+// }, [values]);
+  //useForm({ defaultValues: async () => await fetch(jsonCampos.myFieldName) })
+
+  const { fields, append, prepend, remove, swap, move, insert, replace } =
+    useFieldArray({
+      control,
+      name: "test",
+      // rules: {
+      //   minLength: 4,
+      // },
+    });
+    
+  let renderCount = 0;
+
+  console.log("errors", errors);
 
   useEffect(() => {
+    
     isFocused &&
       WizardStore.update((s) => {
-        s.progress = 0;
+        replace(jsonCampos.campos);
+        s.progress = 33;
       });
-
-  }, [isFocused]);
+  }, [isFocused, replace]);
 
   const onSubmit = (data) => {
+    console.log("data", data)
     WizardStore.update((s) => {
-      s.progress = 33;
-      s.fullName = data.fullName;
-      s.age = data.age;
+      s.progress = 10;
+      s.username = data.username;
+      s.password = data.password;
     });
     navigation.navigate("Step2");
   };
+  //const onSubmit = (data) => console.log("data", data);
+  const isFocused = useIsFocused();
+
+  //append({ descricao: "appendBill", criticidadeMinima: "appendLuo" });
+  // useEffect(() => {
+  //   isFocused &&
+  //     WizardStore.update((s) => {
+  //       s.progress = 0;
+  //     });
+  // }, [isFocused]);
+  
+  // console.log("fields", fields);
+  // function onChange(itemid) {
+    
+  //   return (val) => {
+  //     console.log("itemid", itemid)
+  //     console.log("val", val)
+  //     let par = { itemid : val.id }
+  //     console.log("par", par)
+  //     console.log("selectedTeam", selectedTeam)
+  //     console.log("selectedTeam[itemid]", selectedTeam[itemid])
+  //     setSelectedTeam(val)
+  //     //selectedTeam[itemid] = val.id
+  //     // if(selectedTeam[itemid]==undefined) {
+  //     //   console.log("nao existe para id", itemid)
+  //     //   selectedTeam[itemid] = val.id
+  //     //   //selectedTeam.push({ itemid : val.id })
+  //     //   //setSelectedTeam(par)
+  //     // } else {
+  //     //   console.log("exite")
+  //     //   setSelectedTeam(par)
+  //     // }
+      
+  //   }
+  // }
+  
   return (
     <View style={styles.container}>
       <ProgressBar
@@ -45,66 +151,66 @@ export default function Step1Screen({ navigation }) {
         progress={WizardStore.getRawState().progress}
         color={MD3Colors.primary60}
       />
-      <View style={{ paddingHorizontal: 16 }}>
-        <View style={styles.formEntry}>
-          <Controller
-            control={control}
-            rules={{
-              required: true,
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                mode="outlined"
-                label="Full Name"
-                placeholder="Enter Full Name"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-            )}
-            name="fullName"
-          />
-          {errors.fullName && (
-            <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
-              This is a required field.
-            </Text>
-          )}
-        </View>
+      <View style={{ paddingHorizontal: 16 }}></View>
+      
+      {fields.map((item, index) => {
+        return (
+          <View key={item.id} style={{ paddingHorizontal: 16 }}>
+            <Text>{item.descricao}, {item.id}</Text>
+            <SelectDropdown
+              name={item.id}
+              data={countries}
+              //rowTextForSelection={item.id}
+              onSelect={(selectedItem, index) => {
+                console.log(selectedItem, index)
+                WizardStore.update((s) => {
+                  s.username = selectedItem;
+                  s[item.id] = selectedItem;
+                });
+                
+              }}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                // text represented after item is selected
+                // if data array is an array of objects then return selectedItem.property to render after item is selected
+                return selectedItem
+              }}
+              rowTextForSelection={(item, index) => {
+                // text represented for each item in dropdown
+                // if data array is an array of objects then return item.property to represent item in dropdown
+                return item
+              }}
+            />
+            {/* <TextInput
+              {...register(`test.${index}.descricao`, { required: true })}
+            /> */}
+            {/* <SelectBox
+              label={item.id}
+              options={K_OPTIONS}
+              width="100%"
+              //value={undefined==item ? selectedTeam : selectedTeam[`${item.id}`] }
+              value={selectedTeam}
+              onChange={onChange(item.id)}
+              hideInputFilter={true}
+              //{...register(`test.${item.id}.descricao`, { required: true })}
+            /> */}
+            {/* <Controller
+              render={({ field }) => <TextInput {...field} />}
+              name={`test.${index}.criticidadeMinima`}
+              control={control}
+            /> */}
+            {/* <Button title="Delete" onPress={() => remove(index)}>Del</Button> */}
+          </View>
+        );
+      })}
 
-        <View style={[styles.formEntry]}>
-          <Controller
-            control={control}
-            rules={{
-              required: true,
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                mode="outlined"
-                label="Age"
-                placeholder="Enter Age"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                keyboardType="numeric"
-              />
-            )}
-            name="age"
-          />
-          {errors.age && (
-            <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
-              This is a required field.
-            </Text>
-          )}
-        </View>
-
-        <Button
-          onPress={handleSubmit(onSubmit)}
-          mode="outlined"
-          style={styles.button}
-        >
-          GOTO STEP TWO
-        </Button>
-      </View>
+      <Button
+        title="Submit"
+        mode="outlined"
+        style={styles.button}
+        onPress={handleSubmit(onSubmit)}
+      >
+        PRÓXIMO PASSO
+      </Button>
     </View>
   );
 }
