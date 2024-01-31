@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet, Alert, Select } from "react-native";
 import Constants from "expo-constants";
-import SelectBox from 'react-native-multi-selectbox'
 import SelectDropdown from 'react-native-select-dropdown'
 import { xorBy } from 'lodash'
 

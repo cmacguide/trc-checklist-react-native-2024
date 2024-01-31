@@ -12,7 +12,7 @@ import { useIsFocused } from "@react-navigation/native";
 
 export default function LoginScreen({ navigation }) {
   const jsonFieldsChecklist = require("../assets/jsonFieldsChecklist.json");
-    //const data = require('../assets/data.json');
+  //const data = require('../assets/data.json');
   // keep back arrow from showing
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -37,6 +37,7 @@ export default function LoginScreen({ navigation }) {
   }, [isFocused]);
 
   const onSubmit = (data) => {
+    //aqui submete
     WizardStore.update((s) => {
       s.progress = 10;
       s.username = data.username;
@@ -45,12 +46,12 @@ export default function LoginScreen({ navigation }) {
     navigation.navigate("Step1");
   };
 
-  const renderField = (json) => {
-    console.log("renderField", json.DESCRICAO);
-    return <Text>{json.DESCRICAO}</Text>;
-  };
+  // const renderField = (json) => {
+  //   console.log("renderField", json.DESCRICAO);
+  //   return <Text>{json.DESCRICAO}</Text>;
+  // };
 
-  console.log("json0 ", jsonFieldsChecklist);
+  // console.log("json0 ", jsonFieldsChecklist);
   //console.log("data", data)
 
   return (
@@ -101,7 +102,7 @@ export default function LoginScreen({ navigation }) {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
-                keyboardType="numeric"
+                //keyboardType="numeric"
               />
             )}
             name="password"
