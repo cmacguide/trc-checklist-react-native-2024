@@ -6,6 +6,7 @@ import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { WizardStore } from "../store";
 import { Button, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
 import { useIsFocused } from "@react-navigation/native";
+import axios from "axios"; 
 
 //import { jsonFieldsChecklist } from "../assets/jsonFieldsChecklist.json"
 //import { data } from "../assets/data.json"
@@ -38,12 +39,33 @@ export default function LoginScreen({ navigation }) {
 
   const onSubmit = (data) => {
     //aqui submete
-    WizardStore.update((s) => {
-      s.progress = 10;
-      s.username = data.username;
-      s.password = data.password;
-    });
-    navigation.navigate("Step1");
+    let datasend = {
+      data: {
+        attributes : {
+          usuario_mobile: {
+            nome: data.username,
+            senha: data.password
+          }
+        }
+      }
+    }
+    axios.post("https://trcmobile.com.br/login/ws/api_login_alojamento.php", datasend)
+    .then((r)=> {
+      console.log("r.data.data", r.data.data)
+      let authorized = r.data.data.attributes.OK!=="N";
+      if(authorized) {
+        console.log("caminho_ws", r.data.data.attributes.caminho_ws)
+        WizardStore.update((s) => {
+          s.progress = 10;
+          s.caminho_ws = r.data.data.attributes.caminho_ws
+          s.username = data.username;
+          s.password = data.password;
+        });
+        navigation.navigate("Step1");
+      } else {
+        console.log("Usuário ou senha errado")
+      }
+    })
   };
 
   // const renderField = (json) => {
