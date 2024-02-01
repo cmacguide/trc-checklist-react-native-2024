@@ -59,7 +59,7 @@ export default function Step3Screen({ navigation }) {
           <Controller
             control={control}
             rules={{
-              required: true,
+              //required: true,
             }}
             render={({ field: { onBlur, value } }) => (
               <Checkbox.Item
@@ -94,7 +94,7 @@ export default function Step3Screen({ navigation }) {
           <Controller
             control={control}
             rules={{
-              required: true,
+              //required: true,
             }}
             render={({ field: { onBlur, value } }) => (
               <Checkbox.Item

@@ -107,7 +107,7 @@ function RHFTextInput({ control, errors, inputProps }) {
       <Controller
         control={control}
         rules={{
-          required: true,
+          //required: true,
         }}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput

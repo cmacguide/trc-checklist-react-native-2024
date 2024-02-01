@@ -38,6 +38,7 @@ export default function LoginScreen({ navigation }) {
   }, [isFocused]);
 
   const onSubmit = (data) => {
+    navigation.navigate("Step1");
     //aqui submete
     let datasend = {
       data: {
@@ -89,7 +90,7 @@ export default function LoginScreen({ navigation }) {
           <Controller
             control={control}
             rules={{
-              required: true,
+              //required: true,
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
@@ -114,7 +115,7 @@ export default function LoginScreen({ navigation }) {
           <Controller
             control={control}
             rules={{
-              required: true,
+              //required: true,
             }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput

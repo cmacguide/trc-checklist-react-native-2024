@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Alert, Select } from "react-native";
 import Constants from "expo-constants";
 import SelectDropdown from 'react-native-select-dropdown'
 import { xorBy } from 'lodash'
+import axios from "axios"; 
 
 import {
   SubmitHandler,
@@ -41,17 +42,15 @@ const K_OPTIONS = [
 const countries = ["A", "B", "C", "D", "E"]
 
 export default function LoginScreen({ navigation }) {
-  const jsonCampos = require("../assets/jsonCampos.json");
-  const [selectedTeam, setSelectedTeam] = useState([])
-  //const data = require('../assets/data.json');
+  const jsonCampos = require("../assets/jsonCamposFinal.json");
+  const [selectedOption, setSelectedOption] = useState([])
+
   // keep back arrow from showing
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => null,
     });
   }, [navigation]);
-  
-  //console.log("jsonCampos", jsonCampos.campos)
   
   const values = jsonCampos.campos
   const {
@@ -62,19 +61,6 @@ export default function LoginScreen({ navigation }) {
     watch,
     formState: { errors },
   } = useForm({ defaultValues: WizardStore.useState((s) => s) });
-
-  //console.log("app....")
-  //append({ descricao: "appendBill", criticidadeMinima: "appendLuo" })
-  
-//   useEffect(() => {
-//     if (values) {
-//         setValue([
-//             { name: values.text }, 
-//             { phone: values.text }
-//         ]);
-//     }
-// }, [values]);
-  //useForm({ defaultValues: async () => await fetch(jsonCampos.myFieldName) })
 
   const { fields, append, prepend, remove, swap, move, insert, replace } =
     useFieldArray({
@@ -88,12 +74,11 @@ export default function LoginScreen({ navigation }) {
   let renderCount = 0;
 
   console.log("errors", errors);
-
+  //console.log("j", jsonCampos.data.attributes.grupo_checklist.area)
   useEffect(() => {
-    
     isFocused &&
       WizardStore.update((s) => {
-        replace(jsonCampos.campos);
+        replace(jsonCampos.data.attributes.grupo_checklist.area);
         s.progress = 33;
       });
   }, [isFocused, replace]);
@@ -110,38 +95,41 @@ export default function LoginScreen({ navigation }) {
   //const onSubmit = (data) => console.log("data", data);
   const isFocused = useIsFocused();
 
-  //append({ descricao: "appendBill", criticidadeMinima: "appendLuo" });
-  // useEffect(() => {
-  //   isFocused &&
-  //     WizardStore.update((s) => {
-  //       s.progress = 0;
-  //     });
-  // }, [isFocused]);
-  
-  // console.log("fields", fields);
-  // function onChange(itemid) {
-    
-  //   return (val) => {
-  //     console.log("itemid", itemid)
-  //     console.log("val", val)
-  //     let par = { itemid : val.id }
-  //     console.log("par", par)
-  //     console.log("selectedTeam", selectedTeam)
-  //     console.log("selectedTeam[itemid]", selectedTeam[itemid])
-  //     setSelectedTeam(val)
-  //     //selectedTeam[itemid] = val.id
-  //     // if(selectedTeam[itemid]==undefined) {
-  //     //   console.log("nao existe para id", itemid)
-  //     //   selectedTeam[itemid] = val.id
-  //     //   //selectedTeam.push({ itemid : val.id })
-  //     //   //setSelectedTeam(par)
-  //     // } else {
-  //     //   console.log("exite")
-  //     //   setSelectedTeam(par)
-  //     // }
-      
+  let datasend = {
+    // data: {
+    //   attributes : {
+    //     usuario_mobile: {
+    //       nome: "vagneradm",
+    //       senha: "123",
+    //       codigo_obra: "29"
+    //     },
+    //     codigo_checklist: ""
+    //   }
+    // }
+    "data": {
+      "attributes": {
+        "usuario_mobile": {
+            "nome":"vagneradm",
+            "senha": "123",
+            "codigo_obra": "29"
+        },
+              "codigo_checklist":""
+      }
+    }
+  }
+  console.log("datasend", datasend)
+  // axios.get("https://app.trcmobile.com.br/ws/api_checklist_alojamento.php/", 
+  //   datasend
+  //   // data = datasend,
+  //   // headers = {
+  //   //   "Content-Type": "application/json"
+  //   // }
+  //   )
+  //   .then((r)=> {
+  //     console.log("r", r)
+  //     //let authorized = r.data.data.attributes.OK!=="N";
   //   }
-  // }
+  // )
   
   return (
     <View style={styles.container}>
@@ -155,20 +143,27 @@ export default function LoginScreen({ navigation }) {
       {fields.map((item, index) => {
         return (
           <View key={item.id} style={{ paddingHorizontal: 16 }}>
-            <Text>{item.descricao}</Text>
-            <SelectDropdown
+            <Text>{item.itens_nome} {index} {item.id}</Text>
+            { <SelectDropdown
               name={item.id}
               data={countries}
               defaultButtonText="Responder"
-              onSelect={(selectedItem, index) => {
-                console.log(selectedItem, index)
+              onSelect={(selectedItem, index2) => {
+                console.log(selectedItem, index2)
                 
                 WizardStore.update((s) => {
                   s.step1 == undefined ? s.step1 = [] : "";
-                  console.log("index interno", index)
-                  s.username = selectedItem;
-                  s[item.id] = selectedItem;
-                  s.step1[index] = selectedItem; //não começa com 0
+
+                  console.log("index externo", index)
+                  console.log("index interno", index2)
+                  console.log("item.id interno", item.id)
+                  //s.username = selectedItem;
+                  //selectedOption[`${item.id}`] = selectedItem;
+                  //selectedOption[1] = selectedItem;
+                  //s.step1[item.id] = selectedItem; //não começa com 0
+                  s.step1[index] = selectedItem
+                  selectedOption[index] = selectedItem; //não começa com 0
+                  console.log("selectedOption",selectedOption)
                 });
                 
               }}
@@ -182,7 +177,7 @@ export default function LoginScreen({ navigation }) {
                 // if data array is an array of objects then return item.property to represent item in dropdown
                 return item
               }}
-            />
+            /> }
             {/* <TextInput
               {...register(`test.${index}.descricao`, { required: true })}
             /> */}
