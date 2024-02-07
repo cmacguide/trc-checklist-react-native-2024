@@ -78,7 +78,8 @@ export default function LoginScreen({ navigation }) {
   useEffect(() => {
     isFocused &&
       WizardStore.update((s) => {
-        replace(jsonCampos.data.attributes.grupo_checklist.area);
+        console.log("s.fieldsArea", s.fieldsArea);
+        replace(s.fieldsArea);
         s.progress = 33;
       });
   }, [isFocused, replace]);
@@ -95,7 +96,7 @@ export default function LoginScreen({ navigation }) {
   //const onSubmit = (data) => console.log("data", data);
   const isFocused = useIsFocused();
 
-  let datasend = {
+  let datasend2 = {
     // data: {
     //   attributes : {
     //     usuario_mobile: {
@@ -117,19 +118,15 @@ export default function LoginScreen({ navigation }) {
       }
     }
   }
-  console.log("datasend", datasend)
-  // axios.get("https://app.trcmobile.com.br/ws/api_checklist_alojamento.php/", 
-  //   datasend
-  //   // data = datasend,
-  //   // headers = {
-  //   //   "Content-Type": "application/json"
-  //   // }
-  //   )
-  //   .then((r)=> {
-  //     console.log("r", r)
-  //     //let authorized = r.data.data.attributes.OK!=="N";
-  //   }
-  // )
+  //console.log("datasend2 step1", datasend2)
+  const getF = () => {
+    axios.get("https://app.trcmobile.com.br/ws/api_checklist_alojamento.php/", datasend2)
+    .then((r)=> {
+      console.log("resposta step1:", r)
+      //let authorized = r.data.data.attributes.OK!=="N";
+    })
+  }
+  //getF();
   
   return (
     <View style={styles.container}>

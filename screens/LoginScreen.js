@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet, Alert } from "react-native";
 import Constants from "expo-constants";
 
@@ -13,6 +13,7 @@ import axios from "axios";
 
 export default function LoginScreen({ navigation }) {
   const jsonFieldsChecklist = require("../assets/jsonFieldsChecklist.json");
+  //const [fieldsArea, setFieldsArea] = useState();
   //const data = require('../assets/data.json');
   // keep back arrow from showing
   React.useLayoutEffect(() => {
@@ -38,34 +39,61 @@ export default function LoginScreen({ navigation }) {
   }, [isFocused]);
 
   const onSubmit = (data) => {
-    navigation.navigate("Step1");
-    //aqui submete
+    //navigation.navigate("Step1");
+    let datasend2 = {
+      data: {
+        attributes : {
+          usuario_mobile: {
+            nome: "vagneradm",
+            senha: "123",
+            codigo_obra: "29"
+          },
+          codigo_checklist: ""
+        }
+      }
+    }
     let datasend = {
       data: {
         attributes : {
           usuario_mobile: {
-            nome: data.username,
-            senha: data.password
+            nome: "vagneradm",//data.username,
+            senha: "123"//data.password
           }
         }
       }
     }
-    axios.post("https://trcmobile.com.br/login/ws/api_login_alojamento.php", datasend)
+    let fieldsArea;
+    axios.post("https://app.trcmobile.com.br/ws/api_checklist_alojamento.php", datasend2)
     .then((r)=> {
-      console.log("r.data.data", r.data.data)
-      let authorized = r.data.data.attributes.OK!=="N";
-      if(authorized) {
-        console.log("caminho_ws", r.data.data.attributes.caminho_ws)
-        WizardStore.update((s) => {
-          s.progress = 10;
-          s.caminho_ws = r.data.data.attributes.caminho_ws
-          s.username = data.username;
-          s.password = data.password;
-        });
-        navigation.navigate("Step1");
-      } else {
-        console.log("Usuário ou senha errado")
-      }
+      //console.log("r.data 1 authorized", r.data.data.grupo_checklist["Area externa"])
+      //setFieldsArea(r.data.data.grupo_checklist["Area externa"][0]);
+      fieldsArea = r.data.data.grupo_checklist["Area externa"];
+      //console.log("fieldsArea", fieldsArea);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .then(()=>{
+
+      axios.post("https://trcmobile.com.br/login/ws/api_login_alojamento.php", datasend)
+      .then((r)=> {
+        //console.log("r.data.data 2", r.data.data)
+        let authorized = r.data.data.attributes.OK!=="N";
+        if(authorized) {
+          console.log("caminho_ws", r.data.data.attributes.caminho_ws)
+          WizardStore.update((s) => {
+            s.progress = 10;
+            s.caminho_ws = r.data.data.attributes.caminho_ws
+            s.username = data.username;
+            s.password = data.password;
+            console.log("fieldsAreafieldsArea", fieldsArea);
+            s.fieldsArea = fieldsArea;
+          });
+          navigation.navigate("Step1");
+        } else {
+          console.log("Usuário ou senha errado")
+        }
+      })
     })
   };
 
