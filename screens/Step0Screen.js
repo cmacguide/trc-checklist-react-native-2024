@@ -12,8 +12,6 @@ import { WizardStore } from "../store";
 import { Button, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
 import { useIsFocused } from "@react-navigation/native";
 
-const alternativas = ["A", "B", "C", "D", "E"]
-
 export default function LoginScreen({ navigation }) {
   // keep back arrow from showing
   React.useLayoutEffect(() => {
@@ -22,7 +20,10 @@ export default function LoginScreen({ navigation }) {
     });
   }, [navigation]);
   const [grupoTitulo, setGrupoTitulo] = React.useState();
-
+  const [alternativas, setAlternativas] = React.useState();
+  //const checklistApiRetorno = require("../assets/checklistApiRetorno.json");
+  //console.log("checklistApiRetorno", checklistApiRetorno);
+  //const tela0 = checklistApiRetorno.data.data.grupo_checklist[0];
   const {
     register,
     control,
@@ -45,8 +46,13 @@ export default function LoginScreen({ navigation }) {
   useEffect(() => {
     isFocused &&
       WizardStore.update((s) => {
-        replace(s.fieldsArea[0]);
-        setGrupoTitulo(s.fieldsArea[0][0].grupo_nome);
+        setGrupoTitulo("Escolha do Alojamento");
+        //setAlternativas(s.fieldsAlojas);
+        let ArN = [];
+        s.fieldsAlojas.map((item) => {
+          ArN.push(item.nome_endereco)
+        })
+        setAlternativas(ArN);
         s.progress = 10;
       });
   }, [isFocused, replace]);
@@ -55,7 +61,7 @@ export default function LoginScreen({ navigation }) {
     WizardStore.update((s) => {
       s.progress = 20;
     });
-    navigation.navigate("Step2");
+    navigation.navigate("Step1");
   };
   const isFocused = useIsFocused();
   
@@ -69,18 +75,16 @@ export default function LoginScreen({ navigation }) {
       <Text style={{fontSize:"18px", fontWeight:"bold"}}>Grupo: { grupoTitulo }</Text>
       <View style={{ paddingHorizontal: 16 }}></View>
       <Text>{ WizardStore.getRawState().s }</Text>
-      {fields.map((item, index) => {
-        return (
-          <View key={item.id} style={{ paddingHorizontal: 16 }}>
-            <Text>{item.itens_nome} </Text>
-            { <SelectDropdown
-              name={item.id}
+          <View style={{ paddingHorizontal: 16, width:"100%" }}>
+            {/* <Text>Selecione o alojamento: </Text> */}
+            <SelectDropdown
+              style={{innerWidth:"100%"}}
+              //name={index}
               data={alternativas}
               defaultButtonText="Responder"
               onSelect={(selectedItem) => {                
                 WizardStore.update((s) => {
-                  s.step1 == undefined ? s.step1 = [] : "";
-                  s.step1[index] = selectedItem
+                  s.alojamento = selectedItem
                 });
                 
               }}
@@ -90,11 +94,9 @@ export default function LoginScreen({ navigation }) {
               rowTextForSelection={(item, index) => {
                 return item
               }}
-            /> }
+            />
          </View>
-        );
-      })}
-
+  
       <Button
         mode="outlined"
         style={[styles.button, { marginTop: 40 }]}

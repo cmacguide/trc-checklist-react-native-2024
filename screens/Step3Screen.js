@@ -1,161 +1,130 @@
-import React, { useEffect } from "react";
-import { Text, View, StyleSheet } from "react-native";
-import Constants from "expo-constants";
+import React, { useEffect, useState } from "react";
+import { Text, View, StyleSheet, Alert, Select } from "react-native";
+import SelectDropdown from 'react-native-select-dropdown'
 
-import { useForm, Controller } from "react-hook-form";
+import {
+  SubmitHandler,
+  useForm,
+  Controller,
+  useFieldArray,
+} from "react-hook-form";
 import { WizardStore } from "../store";
-import { Button, Checkbox, MD3Colors, ProgressBar, Divider } from "react-native-paper";
+import { Button, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
 import { useIsFocused } from "@react-navigation/native";
 
-export default function Step3Screen({ navigation }) {
+const alternativas = ["A", "B", "C", "D", "E"]
+
+export default function LoginScreen({ navigation }) {
   // keep back arrow from showing
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => null,
     });
   }, [navigation]);
+  const [grupoTitulo, setGrupoTitulo] = React.useState();
 
-  const isFocused = useIsFocused();
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { errors },
+  } = useForm({ defaultValues: WizardStore.useState((s) => s) });
 
+  const { fields, append, prepend, remove, swap, move, insert, replace } =
+  useFieldArray({
+    control,
+    name: "test",
+    // rules: {
+    //   minLength: 4,
+    // },
+  });
+  
+  console.log("errors", errors);
   useEffect(() => {
     isFocused &&
       WizardStore.update((s) => {
-        s.progress = 66;
+        replace(s.fieldsArea[2]);
+        setGrupoTitulo(s.fieldsArea[2][0].grupo_nome);
+        s.progress = 30;
       });
-
-    console.log("updated state...", WizardStore.getRawState().progress);
-  }, [isFocused]);
-
-  const {
-    handleSubmit,
-    getValues,
-    setValue,
-    control,
-    trigger,
-    formState: { errors },
-  } = useForm({
-    mode: "onBlur",
-    defaultValues: WizardStore.useState((s) => s),
-  });
+  }, [isFocused, replace]);
 
   const onSubmit = (data) => {
     WizardStore.update((s) => {
-      s.progress = 100;
-      s.termsAccepted = data.termsAccepted;
-      s.privacyAccepted = data.privacyAccepted;
+      s.progress = 40;
     });
-    navigation.navigate("Confirmation");
+    navigation.navigate("Step4");
   };
-
+  const isFocused = useIsFocused();
+  
   return (
     <View style={styles.container}>
       <ProgressBar
         style={styles.progressBar}
-        progress={WizardStore.useState().progress / 100}
+        progress={WizardStore.getRawState().progress}
         color={MD3Colors.primary60}
       />
-      <View style={{ paddingHorizontal: 16 }}>
-        <View style={styles.formEntry}>
-          <Controller
-            control={control}
-            rules={{
-              //required: true,
-            }}
-            render={({ field: { onBlur, value } }) => (
-              <Checkbox.Item
-                mode="android"
-                label="Accept Terms and Conditions"
-                status={
-                  getValues("termsAccepted") === "true"
-                    ? "checked"
-                    : "unchecked"
-                }
-                onBlur={onBlur}
-                onPress={() => {
-                  setValue(
-                    "termsAccepted",
-                    getValues("termsAccepted") === "true" ? "" : "true"
-                  );
-                  trigger("termsAccepted");
-                }}
-                value={value}
-              />
-            )}
-            name="termsAccepted"
-          />
-          {errors.termsAccepted && (
-            <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
-              This is a required field.
-            </Text>
-          )}
-        </View>
-        <Divider />
-        <View style={styles.formEntry}>
-          <Controller
-            control={control}
-            rules={{
-              //required: true,
-            }}
-            render={({ field: { onBlur, value } }) => (
-              <Checkbox.Item
-                mode="android"
-                label="Accept Privacy Policy"
-                status={
-                  getValues("privacyAccepted") === "true"
-                    ? "checked"
-                    : "unchecked"
-                }
-                onBlur={onBlur}
-                onPress={() => {
-                  setValue(
-                    "privacyAccepted",
-                    getValues("privacyAccepted") === "true" ? "" : "true"
-                  );
-                  trigger("privacyAccepted");
-                }}
-                value={value}
-              />
-            )}
-            name="privacyAccepted"
-          />
-          {errors.privacyAccepted && (
-            <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
-              This is a required field.
-            </Text>
-          )}
-        </View>
-        <Divider />
-        <Button
-          mode="outlined"
-          style={[styles.button, { marginTop: 40 }]}
-          onPress={() => navigation.goBack()}
-        >
-          GO BACK
-        </Button>
-        <Button
-          onPress={handleSubmit(onSubmit)}
-          mode="outlined"
-          style={styles.button}
-        >
-          NEXT
-        </Button>
+      <Text style={{fontSize:"18px", fontWeight:"bold"}}>Grupo: { grupoTitulo }</Text>
+      <View style={{ paddingHorizontal: 16 }}></View>
+      <Text>{ WizardStore.getRawState().s }</Text>
+      {fields.map((item, index) => {
+        return (
+          <View key={item.id} style={{ paddingHorizontal: 16 }}>
+            <Text>{item.itens_nome} </Text>
+            { <SelectDropdown
+              name={item.id}
+              data={alternativas}
+              defaultButtonText="Responder"
+              onSelect={(selectedItem) => {                
+                WizardStore.update((s) => {
+                  s.step3 == undefined ? s.step3 = [] : "";
+                  s.step3[index] = selectedItem
+                });
+                
+              }}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                return selectedItem
+              }}
+              rowTextForSelection={(item, index) => {
+                return item
+              }}
+            /> }
+         </View>
+        );
+      })}
 
-      </View>
+      <Button
+        mode="outlined"
+        style={[styles.button, { marginTop: 40 }]}
+        onPress={() => navigation.goBack()}
+      >
+        VOLTAR
+      </Button>
+      <Button
+        title="Submit"
+        mode="outlined"
+        style={styles.button}
+        onPress={handleSubmit(onSubmit)}
+      >
+        PRÓXIMO PASSO
+      </Button>
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   button: {
     margin: 8,
   },
   formEntry: {
-    // margin: 8,
+    margin: 8,
   },
   container: {
     flex: 1,
   },
   progressBar: {
     marginBottom: 16,
+    paddingHorizontal: 0,
   },
 });

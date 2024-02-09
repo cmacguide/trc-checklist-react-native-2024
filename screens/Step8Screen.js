@@ -45,17 +45,17 @@ export default function LoginScreen({ navigation }) {
   useEffect(() => {
     isFocused &&
       WizardStore.update((s) => {
-        replace(s.fieldsArea[0]);
+        replace(s.fieldsArea[7]);
         setGrupoTitulo(s.fieldsArea[0][0].grupo_nome);
-        s.progress = 10;
+        s.progress = 40;
       });
   }, [isFocused, replace]);
 
   const onSubmit = (data) => {
     WizardStore.update((s) => {
-      s.progress = 20;
+      s.progress = 50;
     });
-    navigation.navigate("Step2");
+    navigation.navigate("Confirmation");
   };
   const isFocused = useIsFocused();
   
@@ -77,10 +77,10 @@ export default function LoginScreen({ navigation }) {
               name={item.id}
               data={alternativas}
               defaultButtonText="Responder"
-              onSelect={(selectedItem) => {                
+              onSelect={(selectedItem) => {
                 WizardStore.update((s) => {
-                  s.step1 == undefined ? s.step1 = [] : "";
-                  s.step1[index] = selectedItem
+                  s.step4 == undefined ? s.step4 = [] : "";
+                  s.step4[index] = selectedItem
                 });
                 
               }}

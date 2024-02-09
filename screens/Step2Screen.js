@@ -1,92 +1,118 @@
-import React, { useEffect } from "react";
-import { Text, View, StyleSheet } from "react-native";
-import Constants from "expo-constants";
+import React, { useEffect, useState } from "react";
+import { Text, View, StyleSheet, Alert, Select } from "react-native";
+import SelectDropdown from 'react-native-select-dropdown'
 
-import { useForm, Controller } from "react-hook-form";
+import {
+  SubmitHandler,
+  useForm,
+  Controller,
+  useFieldArray,
+} from "react-hook-form";
 import { WizardStore } from "../store";
 import { Button, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
 import { useIsFocused } from "@react-navigation/native";
 
-export default function Step2Screen({ navigation }) {
+const alternativas = ["A", "B", "C", "D", "E"]
+
+export default function LoginScreen({ navigation }) {
   // keep back arrow from showing
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => null,
     });
   }, [navigation]);
-
-  const isFocused = useIsFocused();
+  const [grupoTitulo, setGrupoTitulo] = React.useState();
 
   const {
-    handleSubmit,
+    register,
     control,
+    handleSubmit,
+    reset,
+    watch,
     formState: { errors },
   } = useForm({ defaultValues: WizardStore.useState((s) => s) });
 
+  const { fields, append, prepend, remove, swap, move, insert, replace } =
+  useFieldArray({
+    control,
+    name: "test",
+    // rules: {
+    //   minLength: 4,
+    // },
+  });
+  
+  console.log("errors", errors);
   useEffect(() => {
     isFocused &&
       WizardStore.update((s) => {
-        s.progress = 33;
+        replace(s.fieldsArea[1]);
+        setGrupoTitulo(s.fieldsArea[1][0].grupo_nome);
+        s.progress = 20;
       });
-
-    console.log("updated state...", WizardStore.getRawState().progress);
-  }, [isFocused]);
+  }, [isFocused, replace]);
 
   const onSubmit = (data) => {
     WizardStore.update((s) => {
-      s.progress = 66;
-      s.birthPlace = data.birthPlace;
-      s.maidenName = data.maidenName;
+      s.progress = 30;
     });
     navigation.navigate("Step3");
   };
-
+  const isFocused = useIsFocused();
+  
   return (
     <View style={styles.container}>
       <ProgressBar
         style={styles.progressBar}
-        progress={WizardStore.useState().progress / 100}
+        progress={WizardStore.getRawState().progress}
         color={MD3Colors.primary60}
       />
-      <View style={{ paddingHorizontal: 16 }}>
-        <RHFTextInput
-          control={control}
-          errors={errors}
-          inputProps={{
-            label: "Birth Place",
-            placeholder: "City and State Where You Were Born",
-            name: "birthPlace",
-          }}
-        />
-        <RHFTextInput
-          control={control}
-          errors={errors}
-          inputProps={{
-            label: "Maiden Name",
-            placeholder: "Enter You Mother's Maiden Name",
-            name: "maidenName",
-          }}
-        />
+      <Text style={{fontSize:"18px", fontWeight:"bold"}}>Grupo: { grupoTitulo }</Text>
+      <View style={{ paddingHorizontal: 16 }}></View>
+      <Text>{ WizardStore.getRawState().s }</Text>
+      {fields.map((item, index) => {
+        return (
+          <View key={item.id} style={{ paddingHorizontal: 16 }}>
+            <Text>{item.itens_nome} </Text>
+            { <SelectDropdown
+              name={item.id}
+              data={alternativas}
+              defaultButtonText="Responder"
+              onSelect={(selectedItem) => {                
+                WizardStore.update((s) => {
+                  s.step2 == undefined ? s.step2 = [] : "";
+                  s.step2[index] = selectedItem
+                });
+                
+              }}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                return selectedItem
+              }}
+              rowTextForSelection={(item, index) => {
+                return item
+              }}
+            /> }
+         </View>
+        );
+      })}
 
-        <Button
-          mode="outlined"
-          style={[styles.button, { marginTop: 40 }]}
-          onPress={() => navigation.goBack()}
-        >
-          GO BACK
-        </Button>
-        <Button
-          onPress={handleSubmit(onSubmit)}
-          mode="outlined"
-          style={styles.button}
-        >
-          NEXT
-        </Button>
-      </View>
+      <Button
+        mode="outlined"
+        style={[styles.button, { marginTop: 40 }]}
+        onPress={() => navigation.goBack()}
+      >
+        VOLTAR
+      </Button>
+      <Button
+        title="Submit"
+        mode="outlined"
+        style={styles.button}
+        onPress={handleSubmit(onSubmit)}
+      >
+        PRÓXIMO PASSO
+      </Button>
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   button: {
     margin: 8,
@@ -99,33 +125,6 @@ const styles = StyleSheet.create({
   },
   progressBar: {
     marginBottom: 16,
+    paddingHorizontal: 0,
   },
 });
-function RHFTextInput({ control, errors, inputProps }) {
-  return (
-    <View style={styles.formEntry}>
-      <Controller
-        control={control}
-        rules={{
-          //required: true,
-        }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            mode="outlined"
-            label={inputProps.label}
-            placeholder={inputProps.placeholder}
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-          />
-        )}
-        name={inputProps.name}
-      />
-      {errors[`${inputProps.name}`] && (
-        <Text style={{ margin: 8, marginLeft: 16, color: "red" }}>
-          This is a required field.
-        </Text>
-      )}
-    </View>
-  );
-}

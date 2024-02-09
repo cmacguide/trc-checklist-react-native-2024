@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, Alert, Select } from "react-native";
+import { Text, View, StyleSheet, Alert, Select, ScrollView } from "react-native";
 import SelectDropdown from 'react-native-select-dropdown'
 
 import {
@@ -45,22 +45,22 @@ export default function LoginScreen({ navigation }) {
   useEffect(() => {
     isFocused &&
       WizardStore.update((s) => {
-        replace(s.fieldsArea[0]);
+        replace(s.fieldsArea[5]);
         setGrupoTitulo(s.fieldsArea[0][0].grupo_nome);
-        s.progress = 10;
+        s.progress = 60;
       });
   }, [isFocused, replace]);
 
   const onSubmit = (data) => {
     WizardStore.update((s) => {
-      s.progress = 20;
+      s.progress = 70;
     });
-    navigation.navigate("Step2");
+    navigation.navigate("Step7");
   };
   const isFocused = useIsFocused();
   
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <ProgressBar
         style={styles.progressBar}
         progress={WizardStore.getRawState().progress}
@@ -77,10 +77,10 @@ export default function LoginScreen({ navigation }) {
               name={item.id}
               data={alternativas}
               defaultButtonText="Responder"
-              onSelect={(selectedItem) => {                
+              onSelect={(selectedItem) => {
                 WizardStore.update((s) => {
-                  s.step1 == undefined ? s.step1 = [] : "";
-                  s.step1[index] = selectedItem
+                  s.step6 == undefined ? s.step6 = [] : "";
+                  s.step6[index] = selectedItem
                 });
                 
               }}
@@ -110,7 +110,7 @@ export default function LoginScreen({ navigation }) {
       >
         PRÓXIMO PASSO
       </Button>
-    </View>
+    </ScrollView>
   );
 }
 const styles = StyleSheet.create({
