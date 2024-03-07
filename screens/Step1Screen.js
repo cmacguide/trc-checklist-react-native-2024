@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, StyleSheet, Alert, Select } from "react-native";
+import { Text, View, StyleSheet, Alert, Select, ScrollView } from "react-native";
 import SelectDropdown from 'react-native-select-dropdown'
 
 import {
@@ -23,21 +23,19 @@ export default function LoginScreen({ navigation }) {
   const [grupoTitulo, setGrupoTitulo] = React.useState();
 
   const {
-    register,
     control,
     handleSubmit,
-    reset,
-    watch,
     formState: { errors },
   } = useForm({ defaultValues: WizardStore.useState((s) => s) });
+  const isFocused = useIsFocused();
 
-  const { fields, append, prepend, remove, swap, move, insert, replace } =
+  const { fields, replace } =
   useFieldArray({
     control,
     name: "test",
-    // rules: {
-    //   minLength: 4,
-    // },
+    //# rules: {
+    //#   minLength: 4,
+    //# },
   });
   
   console.log("errors", errors);
@@ -52,14 +50,17 @@ export default function LoginScreen({ navigation }) {
 
   const onSubmit = (data) => {
     WizardStore.update((s) => {
-      s.progress = 10+(currentStep*10);
+      s.step1_input_0 = data.step1_input_0;
+      s.step1_input_1 = data.step1_input_1;
+      s.progress = 20;
+      // s.progress = 10+(currentStep*10);
     });
-    navigation.navigate("Step"+(currentStep+1));
+    //navigation.navigate("Step"+(currentStep+1));
+    navigation.navigate("Step2");
   };
-  const isFocused = useIsFocused();
   
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <ProgressBar
         style={styles.progressBar}
         progress={WizardStore.getRawState().progress}
@@ -82,7 +83,7 @@ export default function LoginScreen({ navigation }) {
                   s.step1_criticidade[index] = selectedItem
                   // s.step[currentStep] == undefined ? s.step[currentStep] = [] : "";
                   // s.step[currentStep][index] = selectedItem
-                  console.log("s.step1_criticidade", s.step1_criticidade)
+                  console.log("s", s)
                 });
               }}
               buttonTextAfterSelection={(selectedItem, index) => {
@@ -101,7 +102,7 @@ export default function LoginScreen({ navigation }) {
                 WizardStore.update((s) => {
                   s.step1_conformidade == undefined ? s.step1_conformidade = [] : "";
                   s.step1_conformidade[index] = selectedItem
-                  console.log("s.step1", s.step1_conformidade)
+                  console.log("s", s)
                 });
               }}
               buttonTextAfterSelection={(selectedItem, index) => {
@@ -112,12 +113,23 @@ export default function LoginScreen({ navigation }) {
               }}
             /> }
 
-            <TextInput
+            <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
                 mode="outlined"
-                label="Notas"
+                label={"Notas "+index}
                 placeholder="Campo opcional para anotações"
-                name={"input_"+index}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
               />
+            )}
+            name={"step1_input_"+index}
+            />
          </View>
         );
       })}
@@ -137,7 +149,7 @@ export default function LoginScreen({ navigation }) {
       >
         PRÓXIMO PASSO
       </Button>
-    </View>
+    </ScrollView>
   );
 }
 const styles = StyleSheet.create({
