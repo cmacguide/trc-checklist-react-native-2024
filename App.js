@@ -24,6 +24,8 @@ import Step8Screen from "./screens/Step8Screen";
 import ConfirmationScreen from "./screens/ConfirmationScreen";
 
 const Stack = createStackNavigator();
+global.alternativasCriticidade = ["A", "B", "C"]
+global.alternativasConformidade = ["C", "NC", "NA"]
 
 export default function App() {
   return (

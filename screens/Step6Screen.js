@@ -66,7 +66,7 @@ export default function LoginScreen({ navigation }) {
         progress={WizardStore.getRawState().progress}
         color={MD3Colors.primary60}
       />
-      <Text style={{fontSize:"18px", fontWeight:"bold"}}>Grupo: { grupoTitulo }</Text>
+      <Text style={{fontSize:18, fontWeight:"bold"}}>Grupo: { grupoTitulo }</Text>
       <View style={{ paddingHorizontal: 16 }}></View>
       <Text>{ WizardStore.getRawState().s }</Text>
       {fields.map((item, index) => {

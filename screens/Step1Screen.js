@@ -12,8 +12,7 @@ import { WizardStore } from "../store";
 import { Button, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
 import { useIsFocused } from "@react-navigation/native";
 
-const alternativas = ["A", "B", "C", "D", "E"]
-
+const currentStep = 1-1;
 export default function LoginScreen({ navigation }) {
   // keep back arrow from showing
   React.useLayoutEffect(() => {
@@ -45,17 +44,17 @@ export default function LoginScreen({ navigation }) {
   useEffect(() => {
     isFocused &&
       WizardStore.update((s) => {
-        replace(s.fieldsArea[0]);
-        setGrupoTitulo(s.fieldsArea[0][0].grupo_nome);
+        replace(s.fieldsArea[currentStep]);
+        setGrupoTitulo(s.fieldsArea[currentStep][0].grupo_nome);
         s.progress = 10;
       });
   }, [isFocused, replace]);
 
   const onSubmit = (data) => {
     WizardStore.update((s) => {
-      s.progress = 20;
+      s.progress = 10+(currentStep*10);
     });
-    navigation.navigate("Step2");
+    navigation.navigate("Step"+(currentStep+1));
   };
   const isFocused = useIsFocused();
   
@@ -66,7 +65,7 @@ export default function LoginScreen({ navigation }) {
         progress={WizardStore.getRawState().progress}
         color={MD3Colors.primary60}
       />
-      <Text style={{fontSize:"18px", fontWeight:"bold"}}>Grupo: { grupoTitulo }</Text>
+      <Text style={{fontSize:18, fontWeight:"bold"}}>Grupo: { grupoTitulo }</Text>
       <View style={{ paddingHorizontal: 16 }}></View>
       <Text>{ WizardStore.getRawState().s }</Text>
       {fields.map((item, index) => {
@@ -75,14 +74,16 @@ export default function LoginScreen({ navigation }) {
             <Text>{item.itens_nome} </Text>
             { <SelectDropdown
               name={item.id}
-              data={alternativas}
-              defaultButtonText="Responder"
+              data={global.alternativasCriticidade}
+              defaultButtonText="Criticidade"
               onSelect={(selectedItem) => {                
                 WizardStore.update((s) => {
-                  s.step1 == undefined ? s.step1 = [] : "";
-                  s.step1[index] = selectedItem
+                  s.step1_criticidade == undefined ? s.step1_criticidade = [] : "";
+                  s.step1_criticidade[index] = selectedItem
+                  // s.step[currentStep] == undefined ? s.step[currentStep] = [] : "";
+                  // s.step[currentStep][index] = selectedItem
+                  console.log("s.step1_criticidade", s.step1_criticidade)
                 });
-                
               }}
               buttonTextAfterSelection={(selectedItem, index) => {
                 return selectedItem
@@ -91,6 +92,32 @@ export default function LoginScreen({ navigation }) {
                 return item
               }}
             /> }
+            
+            { <SelectDropdown
+              name={item.id}
+              data={global.alternativasConformidade}
+              defaultButtonText="Conformidade"
+              onSelect={(selectedItem) => {                
+                WizardStore.update((s) => {
+                  s.step1_conformidade == undefined ? s.step1_conformidade = [] : "";
+                  s.step1_conformidade[index] = selectedItem
+                  console.log("s.step1", s.step1_conformidade)
+                });
+              }}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                return selectedItem
+              }}
+              rowTextForSelection={(item, index) => {
+                return item
+              }}
+            /> }
+
+            <TextInput
+                mode="outlined"
+                label="Notas"
+                placeholder="Campo opcional para anotações"
+                name={"input_"+index}
+              />
          </View>
         );
       })}
