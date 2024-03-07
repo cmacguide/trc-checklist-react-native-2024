@@ -12,7 +12,7 @@ import { WizardStore } from "../store";
 import { Button, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
 import { useIsFocused } from "@react-navigation/native";
 
-const currentStep = 1-1;
+var currentStep = 1-1;
 export default function LoginScreen({ navigation }) {
   // keep back arrow from showing
   React.useLayoutEffect(() => {
@@ -38,7 +38,7 @@ export default function LoginScreen({ navigation }) {
     //# },
   });
   
-  console.log("errors", errors);
+  // console.log("errors", errors);
   useEffect(() => {
     isFocused &&
       WizardStore.update((s) => {
@@ -48,15 +48,18 @@ export default function LoginScreen({ navigation }) {
       });
   }, [isFocused, replace]);
 
-  const onSubmit = (data) => {
+  const onSubmit = () => {
+    console.log("currentStep", currentStep)
+    currentStep++;
+    console.log("currentStep++", currentStep)
     WizardStore.update((s) => {
-      s.step1_input_0 = data.step1_input_0;
-      s.step1_input_1 = data.step1_input_1;
-      s.progress = 20;
-      // s.progress = 10+(currentStep*10);
+      // s.progress = 20;
+      s.progress = 10+(currentStep*10);
+      replace(s.fieldsArea[currentStep]);
+      setGrupoTitulo(s.fieldsArea[currentStep][0].grupo_nome);
     });
-    //navigation.navigate("Step"+(currentStep+1));
-    navigation.navigate("Step2");
+    // navigation.navigate("Step"+(currentStep+1));
+    //navigation.navigate("Step2");
   };
   
   return (
@@ -81,8 +84,6 @@ export default function LoginScreen({ navigation }) {
                 WizardStore.update((s) => {
                   s.step1_criticidade == undefined ? s.step1_criticidade = [] : "";
                   s.step1_criticidade[index] = selectedItem
-                  // s.step[currentStep] == undefined ? s.step[currentStep] = [] : "";
-                  // s.step[currentStep][index] = selectedItem
                   console.log("s", s)
                 });
               }}
@@ -113,22 +114,18 @@ export default function LoginScreen({ navigation }) {
               }}
             /> }
 
-            <Controller
-            control={control}
-            rules={{
-              required: true,
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                mode="outlined"
-                label={"Notas "+index}
-                placeholder="Campo opcional para anotações"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-            )}
-            name={"step1_input_"+index}
+            <TextInput
+              mode="outlined"
+              label={"Notas "+index}
+              placeholder="Campo opcional para anotações"
+              onChangeText={(value) => {                
+                WizardStore.update((s) => {
+                  s.step1_nota == undefined ? s.step1_nota = [] : "";
+                  s.step1_nota[index] = value
+                  console.log("s", s)
+                });
+              }}
+              name={"step"+currentStep+"_input_"+index}
             />
          </View>
         );
