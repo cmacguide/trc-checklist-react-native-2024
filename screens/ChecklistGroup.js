@@ -45,22 +45,19 @@ export default function LoginScreen({ navigation }) {
         replace(s.fieldsArea[currentStep]);
         setGrupoTitulo(s.fieldsArea[currentStep][0].grupo_nome);
         s.progress = 10;
-        //console.log("s",s);
-        //console.log("AAAA", s.step==undefined);
-        //if(s.step["step_"+currentStep+"_notas"]==undefined) {
-          
-        //}
-        //s.step == undefined ? s.step = [] : "";
-        //s.step[currentStep] = [];
-        //s.step["nota_1"] == undefined ? s.step["nota_1"] = ["ABS", "ABD"] : "";
       });
   }, [isFocused, replace]);
 
   const onSubmit = () => {
+    
     console.log("currentStep", currentStep)
+    //(dir==undefined) ? "" : currentStep+=dir;
     currentStep++;
     console.log("currentStep++", currentStep)
     WizardStore.update((s) => {
+      if(s.fieldsArea.length==currentStep) {
+        navigation.navigate("Confirmation");
+      }
       // s.progress = 20;
       s.progress = 10+(currentStep*10);
       replace(s.fieldsArea[currentStep]);
@@ -70,6 +67,11 @@ export default function LoginScreen({ navigation }) {
     //navigation.navigate("Step2");
   };
   
+  function actionPress(dir) {
+    currentStep+dir;
+    handleSubmit(onSubmit)
+  }
+
   return (
     <ScrollView style={styles.container}>
       <ProgressBar
@@ -90,8 +92,6 @@ export default function LoginScreen({ navigation }) {
               defaultButtonText="Criticidade"
               onSelect={(selectedItem) => {                
                 WizardStore.update((s) => {
-                  //s.step1_criticidade == undefined ? s.step1_criticidade = [] : "";
-                  //s.step1_criticidade[index] = selectedItem
                   s.step["step_"+currentStep+"_criticidade"][index] = selectedItem
                   console.log("s", s)
                 });
@@ -110,10 +110,8 @@ export default function LoginScreen({ navigation }) {
               defaultButtonText="Conformidade"
               onSelect={(selectedItem) => {                
                 WizardStore.update((s) => {
-                  // s.step1_conformidade == undefined ? s.step1_conformidade = [] : "";
-                  // s.step1_conformidade[index] = selectedItem
                   s.step["step_"+currentStep+"_conformidade"][index] = selectedItem
-                  console.log("s", s)
+                  // console.log("s", s)
                 });
               }}
               buttonTextAfterSelection={(selectedItem, index) => {
@@ -153,9 +151,7 @@ export default function LoginScreen({ navigation }) {
         title="Submit"
         mode="outlined"
         style={styles.button}
-        onPress={
-          handleSubmit(onSubmit) 
-        }
+        onPress={handleSubmit(onSubmit)}
       >
         PRÓXIMO PASSO
       </Button>

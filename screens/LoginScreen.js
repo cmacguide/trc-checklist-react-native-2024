@@ -87,7 +87,7 @@ export default function LoginScreen({ navigation }) {
               s.fieldsAlojas = r.data.data.alojamentos;
               //console.log("fieldsAlojas", r.data.data.alojamentos);
             });
-            navigation.navigate("Step0");
+            navigation.navigate("SelectObra");
           }
         })
         .catch((err) => {

@@ -40,9 +40,9 @@ export default function ConfirmationScreen({ navigation }) {
     navigation.replace("Step1");
   };
 
-  const jsonCampos = require("../assets/checklistApiRetorno.json");
-  const camposJson = jsonCampos.data.attributes.grupo_checklist.area
-  console.log("information", information)
+  // const jsonCampos = require("../assets/checklistApiRetorno.json");
+  // const camposJson = jsonCampos.data.attributes.grupo_checklist.area
+  // console.log("information", information)
   
   return (
     <View style={styles.container}>
@@ -67,12 +67,12 @@ export default function ConfirmationScreen({ navigation }) {
         </Portal>
         
         {
-          information.step1.map((item, index) => {
-            return <SummaryEntry 
-                name={information.step1[index] }//+ " / " + camposJson[index].itens_nome}  
-                label={information.fieldsArea[index].itens_nome} 
-              />
-            })
+          // information.step1.map((item, index) => {
+          //   return <SummaryEntry 
+          //       name={information.step1[index] }//+ " / " + camposJson[index].itens_nome}  
+          //       label={information.fieldsArea[index].itens_nome} 
+          //     />
+          //   })
         }
 
         <SummaryEntry 

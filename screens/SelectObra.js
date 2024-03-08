@@ -66,11 +66,11 @@ export default function LoginScreen({ navigation }) {
       }
       for(let i=0; i<s.fieldsArea.length; i++) {
         s.step["step_"+i+"_conformidade"]=[]
-        s.step["step_"+i+"_criticidade"]=[]
-        s.step["step_"+i+"_notas"]=[]
+        s.step["step_"+i+"_criticidade"]=["A", "B", "A"] //TODO: fazer carregar
+        s.step["step_"+i+"_notas"]=["Exemplo de nota carregada", "Exemplo 2"]
       }
     });
-    navigation.navigate("Step1");
+    navigation.navigate("ChecklistGroup");
   };
   const isFocused = useIsFocused();
   
