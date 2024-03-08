@@ -60,6 +60,15 @@ export default function LoginScreen({ navigation }) {
   const onSubmit = (data) => {
     WizardStore.update((s) => {
       s.progress = 20;
+      s.step = {
+        ["step_0_conformidade"]:[],
+        ["step_0_criticidade"]:[],
+        ["step_0_notas"]:[],
+        ["step_1_conformidade"]:[],
+        ["step_1_criticidade"]:[],
+        ["step_1_notas"]:[],
+        //["step_"+currentStep+"_notas"]:[]
+      }
     });
     navigation.navigate("Step1");
   };
