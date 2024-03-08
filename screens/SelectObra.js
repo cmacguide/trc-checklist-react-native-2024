@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet, Alert, Select } from "react-native";
 import SelectDropdown from 'react-native-select-dropdown'
+import axios from "axios"; 
 
 import {
   SubmitHandler,
@@ -11,7 +12,35 @@ import {
 import { WizardStore } from "../store";
 import { Button, MD3Colors, ProgressBar, TextInput } from "react-native-paper";
 import { useIsFocused } from "@react-navigation/native";
-
+const mock = {
+	"data": {
+		"codigo_usuario_portal": "156",
+		"nome_obra": "Corporativa",
+		"cod_obra": "1",
+		"obras": [
+			{
+				"id": "1",
+				"nome_obra": "Corporativa"
+			},
+			{
+				"id": "29",
+				"nome_obra": "Morumbi SP - Escritório"
+			},
+			{
+				"id": "92",
+				"nome_obra": "Demonstracao SP"
+			},
+			{
+				"id": "110",
+				"nome_obra": "Portal do Morumbi"
+			}
+		]
+	}
+}
+dataMock = mock.data.obras.map((i)=>{return i.nome_obra})
+let obraSelecionada;
+let selectedUso;
+console.log("dataMock", dataMock);
 export default function LoginScreen({ navigation }) {
   // keep back arrow from showing
   React.useLayoutEffect(() => {
@@ -84,7 +113,73 @@ export default function LoginScreen({ navigation }) {
       <Text style={{fontSize:18, fontWeight:"bold"}}>Grupo: { grupoTitulo }</Text>
       <View style={{ paddingHorizontal: 16 }}></View>
       <Text>{ WizardStore.getRawState().s }</Text>
-          <View style={{ paddingHorizontal: 16, width:"100%" }}>
+      <View style={{ paddingHorizontal: 16, width:"100%" }}>
+           <SelectDropdown
+              style={{innerWidth:"100%"}}
+              //name={index}
+              data={dataMock}
+              defaultButtonText="Selecione Obra"
+              onSelect={(selectedItem) => { 
+                
+                WizardStore.update((s) => {
+                  s.obra = selectedItem
+                });
+                
+              }}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                return selectedItem
+              }}
+              rowTextForSelection={(item, index) => {
+                return item
+              }}
+            />
+
+            <SelectDropdown
+              style={{innerWidth:"100%"}}
+              //name={index}
+              data={["interno", "externo"]}
+              defaultButtonText="Ambiente"
+              onSelect={(selectedItem) => {
+                WizardStore.update((s) => {
+                  s.uso = selectedItem
+                });
+                
+              }}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                return selectedItem
+              }}
+              rowTextForSelection={(item, index) => {
+                return item
+              }}
+            />
+
+            <SelectDropdown
+              style={{innerWidth:"100%"}}
+              //name={index}
+              data={dataMock}
+              defaultButtonText="Responder"
+              onSelect={(selectedItem) => {   
+                WizardStore.update((s) => {
+                  let index = dataMock.indexOf(s.obra);
+                  console.log("index", index);
+                  obraSelecionada = mock.data.obras[index].id;
+                  //
+                  s.uso=="interno" ? selectedUso=1 : selectedUso=0;
+                  console.log("http://app.trcmobile.com.br/ws/checklist/empreiteiras.php?obra="+obraSelecionada+"&uso="+selectedUso);
+                  axios.get("http://app.trcmobile.com.br/ws/checklist/empreiteiras.php?obra="+obraSelecionada+"&uso="+selectedUso)
+                  .then((r)=> {
+                    console.log("r",r);
+                  })
+                });
+              }}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                return selectedItem
+              }}
+              rowTextForSelection={(item, index) => {
+                return item
+              }}
+            />
+
             {/* <Text>Selecione o alojamento: </Text> */}
             <SelectDropdown
               style={{innerWidth:"100%"}}
@@ -104,6 +199,7 @@ export default function LoginScreen({ navigation }) {
                 return item
               }}
             />
+            
          </View>
   
       <Button

@@ -111,7 +111,7 @@ export default function LoginScreen({ navigation }) {
               onSelect={(selectedItem) => {                
                 WizardStore.update((s) => {
                   s.step["step_"+currentStep+"_conformidade"][index] = selectedItem
-                  // console.log("s", s)
+                  console.log("s", s)
                 });
               }}
               buttonTextAfterSelection={(selectedItem, index) => {
@@ -145,7 +145,7 @@ export default function LoginScreen({ navigation }) {
           handleSubmit(onSubmit)
         }
       >
-        VOLTAR
+        VOLTAR ({currentStep})
       </Button>
       <Button
         title="Submit"
@@ -153,7 +153,7 @@ export default function LoginScreen({ navigation }) {
         style={styles.button}
         onPress={handleSubmit(onSubmit)}
       >
-        PRÓXIMO PASSO
+        PRÓXIMO PASSO ({++currentStep})
       </Button>
     </ScrollView>
   );
