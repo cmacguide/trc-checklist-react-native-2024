@@ -53,11 +53,11 @@ export default function LoginScreen({ navigation }) {
     }
     axios.post("https://trcmobile.com.br/login/ws/api_login_alojamento.php", datasend_login)
     .then((r)=> {
-      console.log("resposta do login:", r.data.data)
+      ///console.log("resposta do login:", r.data.data)
       caminho_ws = r.data.data.attributes.caminho_ws;
-      console.log("caminho_ws", caminho_ws)
+      //console.log("caminho_ws", caminho_ws)
       let authorized = r.data.data.attributes.OK!=="N";
-      console.log("authorized", authorized);
+      //console.log("authorized", authorized);
       if(authorized) {
         let datasend_checklist = {
           data: {
@@ -71,12 +71,12 @@ export default function LoginScreen({ navigation }) {
             }
           }
         }
-        console.log("datasend_checklist", datasend_checklist);
+        //console.log("datasend_checklist", datasend_checklist);
         axios.post("https://app.trcmobile.com.br/ws/api_checklist_alojamento.php", datasend_checklist)
         .then((r)=> {
-          console.log("r", r);
+          //console.log("r", r);
           fieldsArea = r.data.data.grupo_checklist[0];
-          console.log("resposta dos checklists", fieldsArea)
+          //console.log("resposta dos checklists", fieldsArea)
           if(fieldsArea) {
             WizardStore.update((s) => {
               s.progress = 10;
@@ -85,7 +85,7 @@ export default function LoginScreen({ navigation }) {
               s.password = "123";//data.password;
               s.fieldsArea = r.data.data.grupo_checklist;
               s.fieldsAlojas = r.data.data.alojamentos;
-              console.log("fieldsAlojas", r.data.data.alojamentos);
+              //console.log("fieldsAlojas", r.data.data.alojamentos);
             });
             navigation.navigate("Step0");
           }

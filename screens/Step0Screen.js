@@ -60,14 +60,14 @@ export default function LoginScreen({ navigation }) {
   const onSubmit = (data) => {
     WizardStore.update((s) => {
       s.progress = 20;
+      console.log("s.fieldsArea.length", s.fieldsArea.length)
       s.step = {
-        ["step_0_conformidade"]:[],
-        ["step_0_criticidade"]:[],
-        ["step_0_notas"]:[],
-        ["step_1_conformidade"]:[],
-        ["step_1_criticidade"]:[],
-        ["step_1_notas"]:[],
-        //["step_"+currentStep+"_notas"]:[]
+        ["notas_calculadas"]:[]
+      }
+      for(let i=0; i<s.fieldsArea.length; i++) {
+        s.step["step_"+i+"_conformidade"]=[]
+        s.step["step_"+i+"_criticidade"]=[]
+        s.step["step_"+i+"_notas"]=[]
       }
     });
     navigation.navigate("Step1");
