@@ -45,6 +45,10 @@ export default function LoginScreen({ navigation }) {
         replace(s.fieldsArea[currentStep]);
         setGrupoTitulo(s.fieldsArea[currentStep][0].grupo_nome);
         s.progress = 10;
+        s.step = [currentStep=[]];
+        //s.step == undefined ? s.step = [] : "";
+        s.step[currentStep] = [];
+        //s.step["nota_1"] == undefined ? s.step["nota_1"] = ["ABS", "ABD"] : "";
       });
   }, [isFocused, replace]);
 
@@ -116,12 +120,11 @@ export default function LoginScreen({ navigation }) {
 
             <TextInput
               mode="outlined"
-              label={"Notas "+index}
+              label={"Notas "+index+" a "+currentStep}
               placeholder="Campo opcional para anotações"
               onChangeText={(value) => {                
-                WizardStore.update((s) => {
-                  s.step1_nota == undefined ? s.step1_nota = [] : "";
-                  s.step1_nota[index] = value
+                WizardStore.update((s, currentStep) => {
+                  s.step[currentStep][index] = value
                   console.log("s", s)
                 });
               }}
