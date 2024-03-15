@@ -45,8 +45,8 @@ export default function LoginScreen({ navigation }) {
   useEffect(() => {
     isFocused &&
       WizardStore.update((s) => {
-        replace(s.fieldsArea[1]);
-        setGrupoTitulo(s.fieldsArea[1][0].grupo_nome);
+        replace(s.grupo_checklist[1]);
+        setGrupoTitulo(s.grupo_checklist[1][0].grupo_nome);
         s.progress = 20;
       });
   }, [isFocused, replace]);

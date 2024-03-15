@@ -19,6 +19,7 @@ import ConfirmationScreen from "./screens/ConfirmationScreen";
 const Stack = createStackNavigator();
 global.alternativasCriticidade = ["A", "B", "C"]
 global.alternativasConformidade = ["C", "NC", "NA"]
+global.grupo_checklist;
 
 export default function App() {
   return (

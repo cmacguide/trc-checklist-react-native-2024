@@ -42,8 +42,8 @@ export default function LoginScreen({ navigation }) {
   useEffect(() => {
     isFocused &&
       WizardStore.update((s) => {
-        replace(s.fieldsArea[currentStep]);
-        setGrupoTitulo(s.fieldsArea[currentStep][0].grupo_nome);
+        replace(s.grupo_checklist[currentStep]);
+        setGrupoTitulo(s.grupo_checklist[currentStep][0].grupo_nome);
         s.progress = 10;
       });
   }, [isFocused, replace]);
@@ -52,16 +52,16 @@ export default function LoginScreen({ navigation }) {
     
     console.log("currentStep", currentStep)
     //(dir==undefined) ? "" : currentStep+=dir;
-    currentStep++;
+    currentStep=7;
     console.log("currentStep++", currentStep)
     WizardStore.update((s) => {
-      if(s.fieldsArea.length==currentStep) {
+      if(s.grupo_checklist.length>=currentStep) {
         navigation.navigate("Confirmation");
       }
       // s.progress = 20;
       s.progress = 10+(currentStep*10);
-      replace(s.fieldsArea[currentStep]);
-      setGrupoTitulo(s.fieldsArea[currentStep][0].grupo_nome);
+      replace(s.grupo_checklist[currentStep]);
+      setGrupoTitulo(s.grupo_checklist[currentStep][0].grupo_nome);
     });
     // navigation.navigate("Step"+(currentStep+1));
     //navigation.navigate("Step2");
@@ -93,7 +93,8 @@ export default function LoginScreen({ navigation }) {
               onSelect={(selectedItem) => {                
                 WizardStore.update((s) => {
                   s.step["step_"+currentStep+"_criticidade"][index] = selectedItem
-                  console.log("s", s)
+                  //s.step[currentStep]["criticidade"][index]=selectedItem
+                  console.log("s", s, " currentStep", currentStep, " s.step[0][criticidade]",s.step[0]["criticidade"])
                 });
               }}
               buttonTextAfterSelection={(selectedItem, index) => {
@@ -111,7 +112,8 @@ export default function LoginScreen({ navigation }) {
               onSelect={(selectedItem) => {                
                 WizardStore.update((s) => {
                   s.step["step_"+currentStep+"_conformidade"][index] = selectedItem
-                  console.log("s", s)
+                  //s.step[currentStep]["conformidade"][index]=selectedItem
+                  console.log("s", s, " currentStep", currentStep, " s.step[0][conformidade]",s.step[0]["conformidade"])
                 });
               }}
               buttonTextAfterSelection={(selectedItem, index) => {
@@ -129,7 +131,7 @@ export default function LoginScreen({ navigation }) {
               onChangeText={(value) => {                
                 WizardStore.update((s) => {
                   s.step["step_"+currentStep+"_notas"][index] = value
-                  console.log("s", s)
+                  console.log("s", s, " currentStep", currentStep, " index", index)
                 });
               }}
               name={"step"+currentStep+"_input_"+index}
@@ -153,7 +155,7 @@ export default function LoginScreen({ navigation }) {
         style={styles.button}
         onPress={handleSubmit(onSubmit)}
       >
-        PRÓXIMO PASSO ({++currentStep})
+        PRÓXIMO PASSO ({currentStep})
       </Button>
     </ScrollView>
   );
