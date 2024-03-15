@@ -11,8 +11,9 @@ import axios from "axios";
 //import { jsonFieldsChecklist } from "../assets/jsonFieldsChecklist.json"
 //import { data } from "../assets/data.json"
 
+
 export default function LoginScreen({ navigation }) {
-  const jsonFieldsChecklist = require("../assets/jsonFieldsChecklist.json");
+  //const jsonFieldsChecklist = require("../assets/checklistApiRetorno.json");
   //const [fieldsArea, setFieldsArea] = useState();
   //const data = require('../assets/data.json');
   // keep back arrow from showing
@@ -34,76 +35,81 @@ export default function LoginScreen({ navigation }) {
   useEffect(() => {
     isFocused &&
       WizardStore.update((s) => {
-        s.progress = 0;
+        console.log("s", s.grupo_checklist[0][0].grupo_nome);
+        //s.progress = 0;
       });
   }, [isFocused]);
 
   const onSubmit = (data) => {
-    //navigation.navigate("Step1");
-    let datasend2 = {
-      data: {
-        attributes : {
-          usuario_mobile: {
-            nome: "vagneradm",
-            senha: "123",
-            codigo_obra: "29"
-          },
-          codigo_checklist: ""
-        }
-      }
+    global.grupo_checklist;
+    global.rObras;
+    let caminho_ws;
+    let datasend_login = {
+      login_usuario_portal: "trc.suporte@trcmobile.com.br",
+      senha_usuario_portal: "9b773801ec4b00f8651bc1a591aa2335"
     }
-    let datasend = {
-      data: {
-        attributes : {
-          usuario_mobile: {
-            nome: "vagneradm",//data.username,
-            senha: "123"//data.password
-          }
-        }
-      }
-    }
-    let fieldsArea;
-    axios.post("https://app.trcmobile.com.br/ws/api_checklist_alojamento.php", datasend2)
+    axios.postForm("http://app.trcmobile.com.br/ws/checklist/login.php", datasend_login)
     .then((r)=> {
-      //console.log("r.data 1 authorized", r.data.data.grupo_checklist["Area externa"])
-      //setFieldsArea(r.data.data.grupo_checklist["Area externa"][0]);
-      fieldsArea = r.data.data.grupo_checklist["Area externa"];
-      //console.log("fieldsArea", fieldsArea);
+      //caminho_ws = r.data.data.attributes.caminho_ws;
+      global.rObras = r.data.data.obras;
+      let token = r.data.data.token;
+      console.log("token", token)
+      global.token = token;
+      if(token) {
+        WizardStore.update((s) => {
+          s.token = token;
+          navigation.navigate("SelectObra");
+        });        
+      }
+
+      //console.log("caminho_ws", caminho_ws)
+      
+      // let authorized = r.data.data.attributes.OK!=="N";
+      // //console.log("authorized", authorized);
+      // if(authorized) {
+      //   let datasend_checklist = {
+      //     data: {
+      //       attributes : {
+      //         usuario_mobile: {
+      //           nome: "vagneradm",
+      //           senha: "123",
+      //           codigo_obra: "29"
+      //         },
+      //         codigo_checklist: ""
+      //       }
+      //     }
+      //   }
+      //   //console.log("datasend_checklist", datasend_checklist);
+      //   axios.post("https://app.trcmobile.com.br/ws/api_checklist_alojamento.php", datasend_checklist)
+      //   .then((r)=> {
+      //     //console.log("r", r);
+      //     global.fieldsArea = r.data.data.grupo_checklist[0];
+      //     //console.log("resposta dos checklists", fieldsArea)
+      //     if(global.fieldsArea) {
+      //       WizardStore.update((s) => {
+      //         s.progress = 10;
+      //         s.caminho_ws = caminho_ws;//r.data.data.attributes.caminho_ws
+      //         s.username = "vagneradm";//data.username;
+      //         s.password = "123";//data.password;
+      //         s.fieldsArea = r.data.data.grupo_checklist;
+      //         s.fieldsAlojas = r.data.data.alojamentos;
+      //         //console.log("fieldsAlojas", r.data.data.alojamentos);
+      //       });
+            
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //   })
+        
+      // } else {
+      //   console.log("Usuário ou senha errado")
+      // }
     })
     .catch((err) => {
       console.log(err);
     })
-    .then(()=>{
-
-      axios.post("https://trcmobile.com.br/login/ws/api_login_alojamento.php", datasend)
-      .then((r)=> {
-        //console.log("r.data.data 2", r.data.data)
-        let authorized = r.data.data.attributes.OK!=="N";
-        if(authorized) {
-          console.log("caminho_ws", r.data.data.attributes.caminho_ws)
-          WizardStore.update((s) => {
-            s.progress = 10;
-            s.caminho_ws = r.data.data.attributes.caminho_ws
-            s.username = data.username;
-            s.password = data.password;
-            console.log("fieldsAreafieldsArea", fieldsArea);
-            s.fieldsArea = fieldsArea;
-          });
-          navigation.navigate("Step1");
-        } else {
-          console.log("Usuário ou senha errado")
-        }
-      })
-    })
   };
-
-  // const renderField = (json) => {
-  //   console.log("renderField", json.DESCRICAO);
-  //   return <Text>{json.DESCRICAO}</Text>;
-  // };
-
-  // console.log("json0 ", jsonFieldsChecklist);
-  //console.log("data", data)
 
   return (
     <View style={styles.container}>

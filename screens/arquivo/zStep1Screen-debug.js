@@ -1,3 +1,4 @@
+//Step1 
 import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet, Alert, Select } from "react-native";
 import Constants from "expo-constants";
@@ -42,7 +43,7 @@ const K_OPTIONS = [
 const countries = ["A", "B", "C", "D", "E"]
 
 export default function LoginScreen({ navigation }) {
-  const jsonCampos = require("../assets/jsonCamposFinal.json");
+  const jsonCampos = require("../assets/checklistApiRetorno.json");
   const [selectedOption, setSelectedOption] = useState([])
 
   // keep back arrow from showing
@@ -63,13 +64,13 @@ export default function LoginScreen({ navigation }) {
   } = useForm({ defaultValues: WizardStore.useState((s) => s) });
 
   const { fields, append, prepend, remove, swap, move, insert, replace } =
-    useFieldArray({
-      control,
-      name: "test",
-      // rules: {
-      //   minLength: 4,
-      // },
-    });
+  useFieldArray({
+    control,
+    name: "test",
+    // rules: {
+    //   minLength: 4,
+    // },
+  });
     
   let renderCount = 0;
 
@@ -79,7 +80,7 @@ export default function LoginScreen({ navigation }) {
     isFocused &&
       WizardStore.update((s) => {
         console.log("s.fieldsArea", s.fieldsArea);
-        replace(s.fieldsArea);
+        replace(s.fieldsArea[0]);
         s.progress = 33;
       });
   }, [isFocused, replace]);
@@ -96,36 +97,25 @@ export default function LoginScreen({ navigation }) {
   //const onSubmit = (data) => console.log("data", data);
   const isFocused = useIsFocused();
 
-  let datasend2 = {
-    // data: {
-    //   attributes : {
-    //     usuario_mobile: {
-    //       nome: "vagneradm",
-    //       senha: "123",
-    //       codigo_obra: "29"
-    //     },
-    //     codigo_checklist: ""
-    //   }
-    // }
-    "data": {
-      "attributes": {
-        "usuario_mobile": {
-            "nome":"vagneradm",
-            "senha": "123",
-            "codigo_obra": "29"
-        },
-              "codigo_checklist":""
-      }
-    }
-  }
-  //console.log("datasend2 step1", datasend2)
-  const getF = () => {
-    axios.get("https://app.trcmobile.com.br/ws/api_checklist_alojamento.php/", datasend2)
-    .then((r)=> {
-      console.log("resposta step1:", r)
-      //let authorized = r.data.data.attributes.OK!=="N";
-    })
-  }
+  // let datasend_checklist = {
+  //   data: {
+  //     attributes : {
+  //       usuario_mobile: {
+  //         nome: "vagneradm",
+  //         senha: "123",
+  //         codigo_obra: "29"
+  //       },
+  //       codigo_checklist: ""
+  //     }
+  //   }
+  // }
+  // const getF = () => {
+  //   axios.get("https://app.trcmobile.com.br/ws/api_checklist_alojamento.php/", datasend2)
+  //   .then((r)=> {
+  //     console.log("resposta step1:", r)
+  //     //let authorized = r.data.data.attributes.OK!=="N";
+  //   })
+  // }
   //getF();
   
   return (
@@ -140,7 +130,7 @@ export default function LoginScreen({ navigation }) {
       {fields.map((item, index) => {
         return (
           <View key={item.id} style={{ paddingHorizontal: 16 }}>
-            <Text>{item.itens_nome} {index} {item.id}</Text>
+            <Text>{item.itens_nome} </Text>
             { <SelectDropdown
               name={item.id}
               data={countries}

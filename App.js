@@ -12,12 +12,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import LoginScreen from "./screens/LoginScreen";
-import Step1Screen from "./screens/Step1Screen";
-import Step2Screen from "./screens/Step2Screen";
-import Step3Screen from "./screens/Step3Screen";
+import SelectObra from "./screens/SelectObra";
+import ChecklistGroup from "./screens/ChecklistGroup";
 import ConfirmationScreen from "./screens/ConfirmationScreen";
 
 const Stack = createStackNavigator();
+global.alternativasCriticidade = ["A", "B", "C"]
+global.alternativasConformidade = ["C", "NC", "NA"]
+global.grupo_checklist;
 
 export default function App() {
   return (
@@ -26,9 +28,8 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login">
           <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Step1" component={Step1Screen} />
-          <Stack.Screen name="Step2" component={Step2Screen} />
-          <Stack.Screen name="Step3" component={Step3Screen} />
+          <Stack.Screen name="SelectObra" component={SelectObra} />
+          <Stack.Screen name="ChecklistGroup" component={ChecklistGroup} />
           <Stack.Screen name="Confirmation" component={ConfirmationScreen} />
         </Stack.Navigator>
       </NavigationContainer>

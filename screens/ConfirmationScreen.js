@@ -40,8 +40,6 @@ export default function ConfirmationScreen({ navigation }) {
     navigation.replace("Step1");
   };
 
-  const jsonCampos = require("../assets/jsonCamposFinal.json");
-  const camposJson = jsonCampos.data.attributes.grupo_checklist.area
   console.log("information", information)
   
   return (
@@ -65,24 +63,41 @@ export default function ConfirmationScreen({ navigation }) {
             </Dialog.Actions>
           </Dialog>
         </Portal>
-        <View>
-            { information.age }
-        </View>
         
         {
-          information.step1.map((item, index) => {
-            return  <SummaryEntry 
-                      name={information.step1[index] }//+ " / " + camposJson[index].itens_nome}  
-                      label={camposJson[index].itens_nome} 
-                    />
-                  // <View>
-                  //   <Text>{jsonCampos.campos[index].descricao}</Text>
-                  //   <Text>{information.step1[index]}</Text>
-                  //  </View>
+          // information.grupo_checklist.map((item, index) => {
+          //   //console.log(global.grupo_checklist);
+          //   item.map((item2, index2) => {
+          //     console.log("index", index, " index2", index2)
+          //     let nameGerado = information.step["step_"+index+"_conformidade"][index2] + ", " + information.step["step_"+index+"_criticidade"][index2] + ", " + information.step["step_"+index+"_notas"][index2]
+          //     console.log("item2.itens_nome", item2.itens_nome)
+          //     return <SummaryEntry 
+          //         name={ nameGerado }//+ " / " + camposJson[index].itens_nome}  
+          //         label={item2.itens_nome} 
+          //       />
+          //   })
+          // })
+        
+          // information.step.map((item, index) => {
+          //   item.map((item2,index2) => {
+          //     let nameGerado = information.step.step_0_criticidade[index2] + ", " + information.step.step_0_conformidade[index2] + ", " + information.step.step_0_notas[index2]
+          //     return <SummaryEntry 
+          //         name={ nameGerado }//+ " / " + camposJson[index].itens_nome}  
+          //         label={information.grupo_checklist[index][index2].itens_nome} 
+          //       />
+          //   })
+          // })
+
+          information.step.step_0_notas.map((item, index) => {
+            let nameGerado = information.step.step_0_criticidade[index] + ", " + information.step.step_0_conformidade[index] + ", " + information.step.step_0_notas[index]
+            return <SummaryEntry 
+                name={ nameGerado }//+ " / " + camposJson[index].itens_nome}  
+                label={information.grupo_checklist[0][index].itens_nome} 
+              />
           })
         }
 
-        <SummaryEntry 
+        {/* <SummaryEntry 
           name={information.fullName} 
           label={"Full Name"} 
         />
@@ -110,7 +125,7 @@ export default function ConfirmationScreen({ navigation }) {
         <SummaryEntry
           name={information.privacyAccepted}
           label={"Accepted User Privacy Policy"}
-        />
+        /> */}
 
         <Button
           style={styles.button}
