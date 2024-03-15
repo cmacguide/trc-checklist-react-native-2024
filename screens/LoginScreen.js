@@ -35,7 +35,8 @@ export default function LoginScreen({ navigation }) {
   useEffect(() => {
     isFocused &&
       WizardStore.update((s) => {
-        s.progress = 0;
+        console.log("s", s.grupo_checklist[0][0].grupo_nome);
+        //s.progress = 0;
       });
   }, [isFocused]);
 

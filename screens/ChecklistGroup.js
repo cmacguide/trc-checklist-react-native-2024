@@ -52,24 +52,44 @@ export default function LoginScreen({ navigation }) {
     
     console.log("currentStep", currentStep)
     //(dir==undefined) ? "" : currentStep+=dir;
-    currentStep=7;
+    currentStep++;
     console.log("currentStep++", currentStep)
     WizardStore.update((s) => {
-      if(s.grupo_checklist.length>=currentStep) {
-        navigation.navigate("Confirmation");
-      }
+      // if(s.grupo_checklist.length>=currentStep) {
+      //   navigation.navigate("Confirmation");
+      // }
       // s.progress = 20;
       s.progress = 10+(currentStep*10);
       replace(s.grupo_checklist[currentStep]);
       setGrupoTitulo(s.grupo_checklist[currentStep][0].grupo_nome);
     });
-    // navigation.navigate("Step"+(currentStep+1));
-    //navigation.navigate("Step2");
+  };
+  const onSubmitBack = () => {
+    
+    console.log("currentStep", currentStep)
+    //(dir==undefined) ? "" : currentStep+=dir;
+    if(currentStep>=1)
+    currentStep--;
+    console.log("currentStep++", currentStep)
+    WizardStore.update((s) => {
+      // if(s.grupo_checklist.length>=currentStep) {
+      //   navigation.navigate("Confirmation");
+      // }
+      // s.progress = 20;
+      s.progress = 10+(currentStep*10);
+      replace(s.grupo_checklist[currentStep]);
+      setGrupoTitulo(s.grupo_checklist[currentStep][0].grupo_nome);
+    });
   };
   
   function actionPress(dir) {
     currentStep+dir;
-    handleSubmit(onSubmit)
+    // WizardStore.update((s) => {
+    //   s.progress = 10+(currentStep*10);
+    //   replace(s.grupo_checklist[currentStep]);
+    //   setGrupoTitulo(s.grupo_checklist[currentStep][0].grupo_nome);
+    // });
+    //handleSubmit(onSubmit)
   }
 
   return (
@@ -94,6 +114,7 @@ export default function LoginScreen({ navigation }) {
                 WizardStore.update((s) => {
                   s.step["step_"+currentStep+"_criticidade"][index] = selectedItem
                   //s.step[currentStep]["criticidade"][index]=selectedItem
+                  s.grupo_checklist[currentStep][index].criticidade = selectedItem
                   console.log("s", s, " currentStep", currentStep, " s.step[0][criticidade]",s.step[0]["criticidade"])
                 });
               }}
@@ -112,8 +133,9 @@ export default function LoginScreen({ navigation }) {
               onSelect={(selectedItem) => {                
                 WizardStore.update((s) => {
                   s.step["step_"+currentStep+"_conformidade"][index] = selectedItem
+                  s.grupo_checklist[currentStep][index].conformidade = selectedItem
                   //s.step[currentStep]["conformidade"][index]=selectedItem
-                  console.log("s", s, " currentStep", currentStep, " s.step[0][conformidade]",s.step[0]["conformidade"])
+                  console.log("s", JSON.stringify(s), " currentStep", currentStep, " s.step[0][conformidade]",s.step[0]["conformidade"])
                 });
               }}
               buttonTextAfterSelection={(selectedItem, index) => {
@@ -131,6 +153,7 @@ export default function LoginScreen({ navigation }) {
               onChangeText={(value) => {                
                 WizardStore.update((s) => {
                   s.step["step_"+currentStep+"_notas"][index] = value
+                  s.grupo_checklist[currentStep][index].comentario = value
                   console.log("s", s, " currentStep", currentStep, " index", index)
                 });
               }}
@@ -144,7 +167,7 @@ export default function LoginScreen({ navigation }) {
         mode="outlined"
         style={[styles.button, { marginTop: 40 }]}
         onPress={
-          handleSubmit(onSubmit)
+          handleSubmit(onSubmitBack)
         }
       >
         VOLTAR ({currentStep})
@@ -153,7 +176,10 @@ export default function LoginScreen({ navigation }) {
         title="Submit"
         mode="outlined"
         style={styles.button}
-        onPress={handleSubmit(onSubmit)}
+        onPress={
+          handleSubmit(onSubmit)
+          
+        }
       >
         PRÓXIMO PASSO ({currentStep})
       </Button>
